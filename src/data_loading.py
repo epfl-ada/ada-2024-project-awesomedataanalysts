@@ -19,7 +19,7 @@ FILE_RATINGS_COUNT = {
 
 def iter_reviews(file_path, max_reviews=None, verbose=True, do_cast=True, **tqdm_args):
     def inner():
-        with open(file_path) as file:
+        with open(file_path, encoding="utf-8") as file:
             review = {}
             review_count = 0
             for line in file:
@@ -67,3 +67,30 @@ def load_beers_breweries_users(data_path):
     users["joined"] = pd.to_datetime(users["joined"], unit="s")
 
     return beers, breweries, users
+
+def data_load_alternative(path_to_rating, nb_reviews):
+    """
+    Loads nb_reviews reviews wtih score and beer_name
+    """
+    with open(path_to_rating, encoding="utf-8") as input_file:
+        rb_ratings = [next(input_file) for _ in range(nb_reviews * 17)] # 17 is the number of lines for each review
+
+    rb_ratings_text = [x.replace("text: ", "")
+                  .replace("\n", "")
+                  .replace("â\x80\x99", "'")
+                  for x in rb_ratings 
+                  if x.startswith("text:")]
+
+    rb_ratings_num = [round(float(x.replace("rating: ", "")
+                    .replace("\n", "")))
+                    for x in rb_ratings 
+                    if x.startswith("rating:")]
+
+    rb_beer_name = [x.replace("beer_name: ", "")
+                    .replace("\n", "")
+                    for x in rb_ratings 
+                    if x.startswith("beer_name:")] 
+    
+    data = {'review': rb_ratings_text, 'score': rb_ratings_num, "beer_name" : rb_beer_name} 
+    
+    return pd.DataFrame(data)
