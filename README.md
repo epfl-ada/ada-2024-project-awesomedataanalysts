@@ -1,16 +1,17 @@
 
+
 # ADA Project : Light Ale, Big Fail: What Beer Reviewers Hate the Most
 
 ## Description
 
 ### Abstract
-People’s likes and preferences are usually the subject of much attention, but understanding what people actively hate can reveal deeper insights into user satisfaction and product improvement. In this project, we aim to extract the main criticisms of beer reviewers, focusing on the specific qualities and characteristics that generate dissatisfaction among reviewers. By examining a large dataset containing around 2.5 million reviews collected from the beer review website RateBeer, we investigate how different attributes—such as flavor, alcohol content, appearance, or aroma—impact user ratings and contribute to lower scores. Additionally, we explore patterns in user behavior that indicate negativity beyond typical preferences, potentially identifying if factors like location or cultural expectations affect specific dislikes. We will augment our data with features extracted from textual reviews using text and emotion analysis.
+People’s likes and preferences are usually the subject of much attention, but understanding what people actively hate can reveal deeper insights into user satisfaction and product improvement. In this project, we aim to extract the main criticisms of beer reviewers, focusing on the specific qualities and characteristics that generate dissatisfaction among reviewers. By examining a large dataset containing around 7 million reviews collected from the beer review website RateBeer, we investigate how different attributes—such as flavor, alcohol content, appearance, or aroma—impact user ratings and contribute to lower scores. Additionally, we explore patterns in user behavior that indicate negativity beyond typical preferences, potentially identifying if factors like location or cultural expectations affect specific dislikes. We will augment our data with features extracted from textual reviews using text and emotion analysis.
 
 ### Research Questions
 - How can we extract beer characteristics from textual reviews? How do the different characteristics of a beer impact the rating given to the beer?
+- Can we identify the beer characteristics people hate by focusing on the worst reviews?
+- How can we even define a bad review? What patterns can we find when it comes to complaints (e.g. by emotion and sentiment of the text, location, beer styles, brewery location, etc)?
 - Are some users (e.g. by location) more critical of certain characteristics? 
-Can we identify the beer characteristics people hate by focusing on the worst reviews?
-- How can we even define a bad review? What patterns can we find when it comes to complaints (e.g. by location, beer styles, etc) ?
 
 ### Data
 While the BeerAdvocate dataset has many more users, RateBeer users are much more active and also more diverse in terms of location. RateBeer users also write more reviews. In fact, RateBeer has 7M reviews (ratings with text) while BeerAdvocate has 2.5M (it has more ratings but we only work on reviews). The plots below indicate that :
@@ -29,9 +30,8 @@ For these reasons we choose to work on the RateBeer dataset, which contains 442k
 
 #### Task 1 : extracting beer features from reviews
 We begin by aggregating the reviews and quantitative data for each beer, extracting qualitative features from textual reviews, and combining ratings and other data to compute the specific flavor profile and characteristics of each beer. This allows us to have richer descriptions for further analysis.
-We use lemmatization and tf-idf for textual analysis, and weight the reviewers’ contributions by their “expert” status. We investigate different ways of using tf-idf on our data, and according to our preliminary analysis, even with the amount of data we have, it should run in a few hours at most. For visualization purposes, we use word clouds, world maps and otherwise plots.
+We use lemmatization and tf-idf for textual analysis, and weight the reviewers’ contributions by their “expert” status. We investigate different ways of using tf-idf on our data, and according to our preliminary analysis, even with the amount of data we have, it should run in a few hours at most. For visualization purposes, we use word clouds, world maps and other plots.
 #### Task 2 : defining negative reviews
-
 What makes a review a bad one? We could just look at the rating, but we would miss reviews that have good ratings but have specific complaints (“great beer overall, but the bitterness is too much for me personally”).
 We try different methods:
 Take the worst rated reviews for each beer, i.e. just the numerical rating.
