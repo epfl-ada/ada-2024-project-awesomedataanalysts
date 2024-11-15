@@ -49,18 +49,18 @@ Do people in certain regions have common complaints or higher expectations?
 Do beers from certain regions have identifiable weaknesses?
 
 #### Timeline
-15.11 Load and clean the data, do the pre-analysis
-22.11 Refine the story
-06.12 Implement tasks 1, 2 and 3
-13.12 Finish the final presentation to submit
-20.12 Milestone 3 deadline, finalize the Github page
+- 15.11 Load and clean the data, do the pre-analysis
+- 22.11 Refine the story
+- 06.12 Implement tasks 1, 2 and 3
+- 13.12 Finish the final presentation to submit
+- 20.12 Milestone 3 deadline, finalize the Github page
 
 #### Team Organization
-Leonardo : Task 1, Task 3
-Luka : Task 2, Task 3
-Saba : Task 1, Task 3
-Sama : Task 2, Task 3
-Shahrzad : Task 1, Task 3
+- Leonardo : Task 1, Task 3
+- Luka : Task 2, Task 3
+- Saba : Task 1, Task 3
+- Sama : Task 2, Task 3
+- Shahrzad : Task 1, Task 3
 
 ## Quickstart
 
