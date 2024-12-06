@@ -68,12 +68,15 @@ def load_beers_breweries_users(data_path):
 
     return beers, breweries, users
 
-def data_load_alternative(path_to_rating, nb_reviews):
+def data_load(path_to_rating, nb_reviews):
     """
-    Loads nb_reviews reviews wtih score and beer_name
+    Loads nb_reviews reviews (or all) wtih score and beer_name
     """
     with open(path_to_rating, encoding="utf-8") as input_file:
-        rb_ratings = [next(input_file) for _ in range(nb_reviews * 17)] # 17 is the number of lines for each review
+        if nb_reviews == "all":
+            rb_ratings = input_file.read().splitlines()
+        else:
+            rb_ratings = [next(input_file) for _ in range(nb_reviews * 17)]  # 17 is the number of lines for each review
 
     rb_ratings_text = [x.replace("text: ", "")
                   .replace("\n", "")
@@ -91,6 +94,11 @@ def data_load_alternative(path_to_rating, nb_reviews):
                     for x in rb_ratings 
                     if x.startswith("beer_name:")] 
     
-    data = {'review': rb_ratings_text, 'score': rb_ratings_num, "beer_name" : rb_beer_name} 
+    rb_user_id = [int(x.replace("user_id: ", "")
+                    .replace("\n", ""))
+                    for x in rb_ratings 
+                    if x.startswith("user_id:")] 
     
+    data = {'review': rb_ratings_text, 'score': rb_ratings_num, "beer_name" : rb_beer_name, "user_id" : rb_user_id} 
+
     return pd.DataFrame(data)

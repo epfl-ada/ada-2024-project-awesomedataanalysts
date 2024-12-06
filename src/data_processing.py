@@ -31,3 +31,11 @@ def add_review_columns(review_file, df, by):
     df = df.merge(review_overall, on=by, how="inner")
 
     return df
+
+def isEnglish(s):
+    try:
+        s.encode(encoding='utf-8').decode('ascii') # detect all non ascii characters => most of the time not english
+    except UnicodeDecodeError:
+        return False
+    else:
+        return True

@@ -1,14 +1,18 @@
 import numpy as np
 import pandas as pd
 
+from gensim import corpora, models
+
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from string import punctuation
 
+import nltk
 from nltk import pos_tag
 from nltk.corpus import stopwords, wordnet
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-
+import src.models as models
+import re
 
 # inspired by https://gist.github.com/4OH4/f727af7dfc0e6bb0f26d2ea41d89ee55
 class Lemmatizer:
@@ -91,3 +95,50 @@ def top_negative_words(corpus_neg, corpus_pos, use_tfidf=False, lemmatize=False,
 
         top_negative_words = combined.sort_values(by="freq_diff", ascending=False)
         return top_negative_words.set_index("word")
+
+def get_complaints_by_topic(topic_by_beer, tokens_feeling, topic_id):
+    tokens_feeling = tokens_feeling[tokens_feeling["max_feel"] == "sadness"]
+    topic_by_beer['dominant_topic'] = topic_by_beer['topics'].apply(lambda x: max(x, key=lambda e : e[1])[0])
+    topic_by_beer = topic_by_beer[topic_by_beer["dominant_topic"] == topic_id]
+    tokens_feeling = tokens_feeling[tokens_feeling["beer_name"].isin(topic_by_beer["beer_name"])]
+    tfidf_df = models.summarize(tokens_feeling.iloc[:5000])
+
+    return tfidf_df
+
+def get_complaints_by_beer_name(data, beer_name):
+    data = data[data["beer_name"] == beer_name]
+    data = data[data["max_feel"] == "sadness"]
+    complaints = models.summarize(data)
+
+    return complaints
+
+def lda_by_beers(reviews, nb_topics):
+    nltk.download('stopwords')
+    stop_words = set(stopwords.words('english'))
+
+    def preprocess(text):
+        tokens = text.lower().split(" ")
+        tokens = [word for word in tokens if word.isalpha() and len(word) > 2 and word not in stop_words]
+        return tokens
+
+    grouped_data = reviews.groupby('beer_name')['review'].apply(' '.join).reset_index()
+    grouped_data['processed'] = grouped_data['review'].apply(preprocess)
+    dictionary = corpora.Dictionary(grouped_data['processed'])
+    dictionary.filter_extremes(no_above=0.4)
+    corpus = [dictionary.doc2bow(text) for text in grouped_data['processed']]
+
+    num_topics = nb_topics
+    lda_model = models.LdaModel(corpus, num_topics=num_topics, id2word=dictionary, passes=2)
+
+    for idx, topic in lda_model.print_topics(num_topics=num_topics, num_words=5):
+        print(f"Topic {idx}: {topic}")
+
+    grouped_data['topics'] = [lda_model.get_document_topics(doc) for doc in corpus]
+
+    # lda_model.save("lda_by_beer/LDA_model.pkl")
+    # pd.to_pickle(grouped_data, "lda_by_beer/results_lda.pkl")
+
+    return grouped_data
+
+def split_review(review):
+    return re.split('\\;|\\,|\\.', review) # tokenize on sentences (by . , or ;)

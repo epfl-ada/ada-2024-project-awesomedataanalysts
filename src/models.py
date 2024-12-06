@@ -1,4 +1,5 @@
 from transformers import pipeline
+import random 
 
 def emotion_sentiment(data, cuda=False):
     if cuda:
@@ -56,3 +57,27 @@ def polarity_sentiment(data, cuda=False):
     negative_reviews["polarity"] = polarity
 
     return negative_reviews
+
+def summarize(df):
+    summarizer = pipeline("summarization", device="cuda")
+    all_complaints = ' '.join(df['review'])
+
+    def split_text(text, chunk_size=750):
+        words = text.split()
+        for i in range(0, len(words), chunk_size):
+            yield ' '.join(words[i:i+chunk_size])
+
+    chunks = list(split_text(all_complaints))
+    summaries = [summarizer(chunk[:1000], max_length=100, min_length=50, do_sample=False)[0]['summary_text'] for chunk in chunks]
+    final_summaries = []
+
+    for i in range(100):
+        final_summaries.append(summarizer(' '.join(random.choices(summaries, k=200))[:800], max_length=100, min_length=50, do_sample=False)[0]['summary_text'])
+    
+    final_summary = summarizer(' '.join(random.choices(final_summaries, k=50))[:800], max_length=200, min_length=50, do_sample=False)[0]['summary_text']
+    final_summary = summarizer(final_summary, max_length=200, min_length=50, do_sample=False)[0]['summary_text']
+    
+    print("Final Summary of All Complaints:")
+    print(final_summary)
+    return final_summary
+

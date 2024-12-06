@@ -1,7 +1,10 @@
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
-
+import pandas as pd
+from collections import defaultdict, Counter
+import scipy.stats as stats
+import seaborn as sns
 
 def plot_histogram_with_percentile(data, title, q=50, **hist_kwargs):
     percentile = np.percentile(data, q)
@@ -42,3 +45,200 @@ def plot_avg_overall_map(df, title):
     cbar.set_position([0.77, 0.3, 0.03, 0.4]) # [left, bottom, width, height]
 
     ax.set_title(title)
+
+def plot_emotion_by_score_spearman(data):
+    # Compute counts for each score and emotion
+    emotion_counts = data.groupby(['score'])["max_feel"].value_counts().unstack(fill_value=0)
+    # Then their percentage in each score class
+    emotion_percentages = emotion_counts.div(emotion_counts.sum(axis=1), axis=0) * 100
+
+    emotion_percentages.plot(kind='bar', stacked=True, colormap="Set2", figsize=(10, 6))
+    plt.title("Percentage of found emotions in each score class")
+    plt.xlabel("Score")
+    plt.ylabel("Emotion percentage")
+    plt.legend(title="Emotion", bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.tight_layout()
+    plt.xticks(rotation=0)
+    plt.show()
+
+    emotion_percentages = emotion_percentages.reset_index()
+
+    # Compute the spearman correlation for each emotion between its percentage and its score
+    spearman_results = {}
+    for emotion in emotion_counts.columns:
+        spearman_corr, p_value = stats.spearmanr(emotion_percentages['score'], emotion_percentages[emotion])
+        spearman_results[emotion] = {'Spearman correlation': spearman_corr, 'p-value': p_value}
+
+    spearman_df = pd.DataFrame(spearman_results).T
+    print("Spearman correlation for emotions by score: ")
+    print("(if p value < 0.05 we can say that a change in score, introducted a predictable increase or decrease in the percentage for that emotion) ")
+    print(spearman_df) 
+
+def plot_avg_score_by_topic(data_score_topic):
+    topic_scores = defaultdict(float)
+    topic_weights = defaultdict(float)
+
+    for topics, score in zip(data_score_topic['topics'], data_score_topic['score']):
+        for topic_num, prob in topics:
+            topic_scores[topic_num] += score * prob
+            topic_weights[topic_num] += prob
+
+    avg_scores = {k: topic_scores[k] / topic_weights[k] for k in topic_scores}
+
+    topics = list(avg_scores.keys())
+    average_scores = list(avg_scores.values())
+
+    plt.figure(figsize=(10, 6))
+    bars = plt.bar(topics, average_scores, color='green', edgecolor='black')
+
+    for bar, avg_score in zip(bars, average_scores):
+        plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.1, f'{avg_score:.2f}', ha='center', fontsize=10)
+
+    plt.xlabel('Topic Number', fontsize=12)
+    plt.ylabel('Average Score', fontsize=12)
+    plt.title('Average Score for Each Topic', fontsize=14)
+    plt.xticks(topics)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+def plot_topic_distrib(data_topic):
+    topic_counter = Counter()
+    topic_counts = Counter()
+
+    for topics in data_topic['topics']:
+        for topic_num, prob in topics:
+            topic_counter[topic_num] += prob
+            topic_counts[topic_num] += 1
+
+    total_probability = sum(topic_counter.values())
+    topic_percentages = {k: (v / total_probability) * 100 for k, v in topic_counter.items()}
+    topic_avg_probabilities = {k: topic_counter[k] / topic_counts[k] for k in topic_counter}
+
+    topics = list(topic_percentages.keys())
+    percentages = list(topic_percentages.values())
+    avg_probabilities = [topic_avg_probabilities[topic] for topic in topics]
+
+    plt.figure(figsize=(10, 6))
+    bars = plt.bar(topics, percentages, color='skyblue', edgecolor='black')
+
+    for bar, avg_prob in zip(bars, avg_probabilities):
+        plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.4, f'{avg_prob:.2f}', ha='center', fontsize=10)
+
+    plt.xlabel('Topic Number', fontsize=12)
+    plt.ylabel('Percentage of Total Probability', fontsize=12)
+    plt.title('Distribution of Topics with Average Probability', fontsize=14)
+    plt.xticks(topics)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+def plot_topic_emotions_distrib(data_emotion_topic):
+    emotions = data_emotion_topic['max_feel'].unique()
+    emotion_indices = {emotion: idx for idx, emotion in enumerate(emotions)}
+    topic_distribution = {}
+
+    for topics, emotion in zip(data_emotion_topic['topics'], data_emotion_topic['max_feel']):
+        for topic_num, prob in topics:
+            if topic_num not in topic_distribution:
+                topic_distribution[topic_num] = np.zeros(len(emotions))
+            topic_distribution[topic_num][emotion_indices[emotion]] += prob
+
+    def adjust_to_shape(distribution):
+        n = len(distribution)
+        for i in range(n):
+            distribution[i] = (distribution[i] + distribution[(i+1) % n]) / 2
+        return distribution / distribution.sum()
+    for topic_num in topic_distribution:
+        topic_distribution[topic_num] = adjust_to_shape(topic_distribution[topic_num]) 
+
+    def plot_radar_chart(topic_num, values, emotions):
+        angles = np.linspace(0, 2 * np.pi, len(emotions), endpoint=False).tolist()
+        values = np.concatenate((values, [values[0]]))
+        angles += angles[:1]
+
+        plt.figure(figsize=(6, 6))
+        ax = plt.subplot(111, polar=True)
+        ax.fill(angles, values, color='skyblue', alpha=0.4)
+        ax.plot(angles, values, color='blue', linewidth=2)
+        ax.set_ylim(0, 1)
+        ax.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
+        ax.set_yticklabels(['0.2', '0.4', '0.6', '0.8', '1.0'], fontsize=8)
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(emotions, fontsize=10)
+        ax.set_title(f'Topic {topic_num} Distribution Across Emotions', fontsize=14, pad=20)
+        plt.show()
+
+    for topic_num, distribution in topic_distribution.items():
+        plot_radar_chart(topic_num, distribution, emotions)
+
+def plot_score_emotions_distrib(data_score_emotions):
+    scores = data_score_emotions['score'].unique()
+    emotions = ['anger', 'disgust', 'fear', 'joy', 'neutral', 'sadness', 'surprise']
+
+    average_emotion_probabilities = {}
+    for score in scores:
+        group = data_score_emotions[data_score_emotions['score'] == score]
+        average_emotion_probabilities[score] = group[emotions].mean().values
+
+    def flatten_distribution(distribution):
+        n = len(distribution)
+        flattened = np.zeros_like(distribution)
+        for i in range(n):
+            flattened[i] = (distribution[i - 1] + distribution[i] + distribution[(i + 1) % n]) / 3
+        return flattened / flattened.max()
+
+    for score in average_emotion_probabilities:
+        probabilities = average_emotion_probabilities[score]
+        average_emotion_probabilities[score] = flatten_distribution(probabilities)
+
+    def plot_radar_chart(score, distribution, emotions):
+        angles = np.linspace(0, 2 * np.pi, len(emotions), endpoint=False).tolist()
+        values = np.concatenate((distribution, [distribution[0]])) 
+        angles += angles[:1]
+
+        plt.figure(figsize=(6, 6))
+        ax = plt.subplot(111, polar=True)
+        ax.fill(angles, values, color='skyblue', alpha=0.4)
+        ax.plot(angles, values, color='blue', linewidth=2)
+        ax.set_ylim(0, 1) 
+        ax.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
+        ax.set_yticklabels(['0.2', '0.4', '0.6', '0.8', '1.0'], fontsize=8)
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(emotions, fontsize=10)
+        ax.set_title(f'Score {score} Emotion Distribution', fontsize=14, pad=20)
+        plt.show()
+
+    for score, distribution in average_emotion_probabilities.items():
+        plot_radar_chart(score, distribution, emotions)
+
+def plot_emotion_loc_distrib(data_location_emotion):
+    top_locations = data_location_emotion['location'].value_counts().head(10).index
+    filtered_df = data_location_emotion[data_location_emotion['location'].isin(top_locations)]
+    distribution = filtered_df.groupby(['location', 'max_feel']).size().unstack(fill_value=0)
+    distribution = distribution.loc[distribution.sum(axis=1).sort_values(ascending=False).index]
+    distribution.plot(kind='bar', stacked=True, figsize=(12, 6))
+
+    plt.title("Distribution of max_feel by Top 10 Locations (Ordered by Total Count)")
+    plt.xlabel("Location")
+    plt.ylabel("Count")
+    plt.legend(title="Max Feel")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+def plot_top_loc_emotion(data_emotion_location, threshold, emotion_name, top_n):
+    location_counts = data_emotion_location['location'].value_counts()
+    valid_locations = location_counts[location_counts > threshold].index
+    counts = data_emotion_location[data_emotion_location['max_feel'] == emotion_name]['location'].value_counts()
+    percentage = (counts / location_counts * 100).dropna()
+    percentage = percentage[valid_locations]
+    top_loc = percentage.sort_values(ascending=False).head(top_n)
+    top_loc.plot(kind='bar', color='skyblue', figsize=(12, 6))
+
+    plt.title(f'Top {top_n} Locations with Highest Percentage of "{emotion_name}" in max_feel (Count > {threshold})')
+    plt.xlabel('Location')
+    plt.ylabel(f'Percentage of "{emotion_name}" (%)')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
