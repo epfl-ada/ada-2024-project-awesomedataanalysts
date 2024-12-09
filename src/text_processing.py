@@ -1,100 +1,142 @@
 import numpy as np
 import pandas as pd
+import re
+from string import punctuation
+
+import src.models as models
 
 from gensim import corpora, models
-
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from string import punctuation
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer, ENGLISH_STOP_WORDS
 
 import nltk
 from nltk import pos_tag
 from nltk.corpus import stopwords, wordnet
 from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-import src.models as models
-import re
+from nltk.stem import PorterStemmer, SnowballStemmer, WordNetLemmatizer
 
-# inspired by https://gist.github.com/4OH4/f727af7dfc0e6bb0f26d2ea41d89ee55
+
+TWO_LETTERS_NUMBERS = r"(?u)\b\w\w+\b"
+THREE_LETTERS = r"(?u)\b[a-zA-Z]{3,}\b"
+
 class Lemmatizer:
-    def __init__(self):
+    def __init__(self, token_pattern=TWO_LETTERS_NUMBERS):
+        self.tokenize = re.compile(token_pattern).findall
         self.lemmatizer = WordNetLemmatizer()
 
-    def _wordnet_pos(self, word):
-        """Map POS (part of speech) tag to first character lemmatize() accepts"""
-        tag = pos_tag([word])[0][1][0].upper()
-        tag_dict = {"J": wordnet.ADJ,
-                    "N": wordnet.NOUN,
-                    "V": wordnet.VERB,
-                    "R": wordnet.ADV}
-        return tag_dict.get(tag, wordnet.NOUN)
+    def _wordnet_pos(self, tag):
+        """Map POS tag to WordNet POS tag"""
+        tag_dict = {
+            "J": wordnet.ADJ,
+            "N": wordnet.NOUN,
+            "V": wordnet.VERB,
+            "R": wordnet.ADV
+        }
+        return tag_dict.get(tag[0].upper(), wordnet.NOUN)
+
+    def lemmatize(self, token, tag):
+        return self.lemmatizer.lemmatize(token, self._wordnet_pos(tag))
 
     def __call__(self, text):
-        words = word_tokenize(text)
-        return [self.lemmatizer.lemmatize(w, self._wordnet_pos(w)) for w in words]
+        tokens = self.tokenize(text)
+        pos_tags = pos_tag(tokens)
+        return [self.lemmatize(token, tag) for token, tag in pos_tags]
 
+class Stemmer:
+    def __init__(self, token_pattern=TWO_LETTERS_NUMBERS):
+        self.tokenize = re.compile(token_pattern).findall
+        self.stem = SnowballStemmer("english").stem # or PorterStemmer
 
-LEMMATIZER = Lemmatizer()
+    def __call__(self, text):
+        tokens = self.tokenize(text)
+        return [self.stem(token) for token in tokens]
 
-STOP_WORDS = stopwords.words("english") + list(punctuation)
-STOP_WORDS = [sw for sw in STOP_WORDS if sw not in ["no", "not"]] # don't remove negatives
-STOP_WORDS_LEMMATIZED = LEMMATIZER(" ".join(STOP_WORDS))
+def get_stop_words(corpus, tokenizer=None, token_pattern=THREE_LETTERS, max_df=0.9):
+    """Get english stop words and frequent words (those with document frequency higher than *max_df*)."""
+    if tokenizer is not None:
+        tokenizer = tokenizer(token_pattern=token_pattern)
 
-def word_freq(corpus, lemmatize=False, ngrams=(1, 1)):
-    if lemmatize:
-        vectorizer = CountVectorizer(
-            stop_words=STOP_WORDS_LEMMATIZED, ngram_range=ngrams,
-            tokenizer=LEMMATIZER, token_pattern=None)
-    else:
-        vectorizer = CountVectorizer(stop_words=STOP_WORDS, ngram_range=ngrams)
+    stop_words = set(ENGLISH_STOP_WORDS)
 
-    X = vectorizer.fit_transform(corpus)
+    doc_freq_vectorizer = CountVectorizer(
+        binary=True, lowercase=True, strip_accents="ascii", tokenizer=tokenizer,
+        token_pattern=token_pattern if tokenizer is None else None
+    )
 
-    word_counts = pd.DataFrame({
-        "word": vectorizer.get_feature_names_out(),
-        "freq": np.array(X.sum(axis=0))[0]
-    })
+    doc_freqs = np.array(doc_freq_vectorizer.fit_transform(corpus).todense()).sum(axis=0) / len(corpus)
 
-    word_counts = word_counts[~word_counts["word"].isin(STOP_WORDS)]
+    words = doc_freq_vectorizer.get_feature_names_out()
+    frequent_words = words[doc_freqs >= max_df]
+    stop_words.update(frequent_words)
 
-    return word_counts
+    stop_words = list(stop_words)
+    stop_words.extend(["pours"])
+    stop_words.extend([
+        'argentina', 'thailand', 'turkey', 'united states', 'us', 'trinidad', 'tobago', 'sri lanka',
+        'australia', 'aussie', 'australian', 'spain', 'austria', 'belgium', 'brazil', 'brazilian',
+        'canada', 'china', 'czech', 'denmark', 'england', 'finland', 'france', 'germany', 'greece',
+        'india', 'ireland', 'italy', 'jamaica', 'japan', 'kenya', 'mexico', 'netherlands', 'norway',
+        'poland', 'russia', 'scotland', 'singapore', 'chinese', 'french', 'irish', 'italian',
+        'jamaican', 'japanese', 'africa', 'african', 'mexican', 'alaska', 'alaskan'
+    ])
+    #stop_words.extend(["aaaagghh", "aaagh", "aaah", "meh"])
 
-def top_negative_words(corpus_neg, corpus_pos, use_tfidf=False, lemmatize=False, ngrams=(1, 1)):
-    if use_tfidf:
-        all_reviews = corpus_neg + corpus_pos
-        labels = ["negative"] * len(corpus_neg) + ["positive"] * len(corpus_pos)
+    if tokenizer is not None:
+        stop_words = tokenizer(" ".join(stop_words))
 
-        if lemmatize:
-            tfidf_vectorizer = TfidfVectorizer(
-                stop_words=STOP_WORDS_LEMMATIZED, ngram_range=ngrams,
-                tokenizer=LEMMATIZER, token_pattern=None)
-        else:
-            tfidf_vectorizer = TfidfVectorizer(stop_words=STOP_WORDS, ngram_range=ngrams)
+    return stop_words
 
-        tfidf_matrix = tfidf_vectorizer.fit_transform(all_reviews)
-        tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
-        tfidf_df["label"] = labels
+def get_word_counts(corpus, beer_names, tokenizer=None, token_pattern=THREE_LETTERS, **vectorizer_kwargs):
+    """Get the word counts in the corpus. When using a tokenizer, this takes some time.
 
-        positive_tfidf = tfidf_df[tfidf_df["label"] == "positive"].drop(columns=["label"]).mean()
-        negative_tfidf = tfidf_df[tfidf_df["label"] == "negative"].drop(columns=["label"]).mean()
+    This is separate from computing the tf-idf scores because we may want to do something simple
+    like subtracting frequencies when looking for negative words."""
+    if tokenizer is not None:
+        tokenizer = tokenizer(token_pattern=token_pattern)
 
-        top_negative_words = pd.DataFrame({
-            "avg_pos_score": positive_tfidf,
-            "avg_neg_score": negative_tfidf,
-            "score_diff": negative_tfidf - positive_tfidf
-        }).sort_values(by="score_diff", ascending=False)
+    vectorizer = CountVectorizer(
+        lowercase=True, strip_accents="ascii", tokenizer=tokenizer,
+        token_pattern=token_pattern if tokenizer is None else None,
+        **vectorizer_kwargs
+    )
 
-        return top_negative_words
+    counts = vectorizer.fit_transform(corpus)
 
-    else: # use word frequencies
-        freq_neg = word_freq(corpus_neg, lemmatize=lemmatize, ngrams=ngrams)
-        freq_pos = word_freq(corpus_pos, lemmatize=lemmatize, ngrams=ngrams)
+    vocabulary = vectorizer_kwargs.get("vocabulary")
+    if vocabulary is None:
+        vocabulary = vectorizer.get_feature_names_out()
 
-        combined = freq_neg.merge(freq_pos, on="word", how="outer", suffixes=("_neg", "_pos"))
-        combined = combined.fillna(0)
-        combined["freq_diff"] = combined["freq_neg"] - combined["freq_pos"]
+    counts = pd.DataFrame(counts.toarray(), columns=vocabulary, index=beer_names)
+    counts.index.name = "beer_name"
+    return counts
 
-        top_negative_words = combined.sort_values(by="freq_diff", ascending=False)
-        return top_negative_words.set_index("word")
+def get_tfidf_scores(counts):
+    """Get the tf-idf scores from the raw word counts."""
+    tfidf = TfidfTransformer().fit_transform(counts)
+
+    tfidf = pd.DataFrame(tfidf.toarray(), columns=counts.columns, index=counts.index)
+    tfidf.index.name = "beer_name"
+
+    return tfidf
+
+def get_top_attributes(scores, top_attributes=10, column_prefix="attr_"):
+    attributes = {}
+    for idx, row in scores.iterrows():
+        top_attr = row[1:].sort_values(ascending=False).head(top_attributes)
+        attributes[idx] = list(top_attr.index)
+
+    attributes = pd.DataFrame.from_dict(
+        attributes, orient="index", columns=[f"{column_prefix}{i+1}" for i in range(top_attributes)])
+    attributes.index.name = "beer_name"
+
+    return attributes
+
+def split_worst_and_best_reviews(reviews, percent=10):
+    percentiles = reviews.groupby("beer_name")["rating"].quantile(percent / 100).rename("percentile")
+    reviews = reviews.merge(percentiles, on="beer_name")
+    worst_reviews = reviews[reviews["rating"] <= reviews["percentile"]]
+    best_reviews = reviews[reviews["rating"] > reviews["percentile"]]
+    return worst_reviews, best_reviews
+
 
 def get_complaints_by_topic(topic_by_beer, tokens_feeling, topic_id):
     tokens_feeling = tokens_feeling[tokens_feeling["max_feel"] == "sadness"]

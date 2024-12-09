@@ -1,7 +1,7 @@
 import pandas as pd
 
 from .utils import tqdm
-
+import re
 
 # note that we load all ids as strings
 REVIEW_DATA_CASTS = {
@@ -102,3 +102,33 @@ def data_load(path_to_rating, nb_reviews):
     data = {'review': rb_ratings_text, 'score': rb_ratings_num, "beer_name" : rb_beer_name, "user_id" : rb_user_id} 
 
     return pd.DataFrame(data)
+
+def build_reviews_corpus(reviews, sample_beers=10, expert_ids=None, expert_weight=2, random_state=23):
+    reviews_by_beer = reviews.groupby("beer_name")
+
+    unique_beers = len(reviews_by_beer)
+
+    if sample_beers == "all" or sample_beers > unique_beers:
+        sample_beers = unique_beers
+
+    beer_names = list(reviews_by_beer.size().sample(sample_beers, random_state=random_state).index)
+
+    corpus = []
+    for beer_name in beer_names:
+        beer_reviews = reviews_by_beer.get_group(beer_name)
+
+        if expert_ids is not None:
+            expert_reviews = beer_reviews[beer_reviews["user_id"].isin(expert_ids)]
+            beer_reviews = pd.concat([beer_reviews] + (expert_weight - 1) * [expert_reviews], ignore_index=True)
+
+        document = "\n".join(beer_reviews["text"])
+
+        # some apostrophes have been replaced by â\x80\x99 (â) this is due to an encoding issue beyond our control
+        document = re.sub(r"â\x80\x99", "’", document)
+
+        # the word ipa is often missspelled (eg ipaa) and the lemmatizer doesn't remove the s from the plural ipas
+        document = re.sub(r"\b\w*ipa\w*\b", "ipa", document, flags=re.IGNORECASE)
+
+        corpus.append(document)
+
+    return corpus, beer_names
