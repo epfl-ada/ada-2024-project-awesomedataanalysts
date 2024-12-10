@@ -14,10 +14,13 @@
     {% include_cached masthead.html %}
 
     <div class="initial-content">
+      <div class="cover-image">
+        <img src="/assets/images/cover_image.jpg" alt="Cover Image" style="width: 100%; height: auto;">
+      </div>
       {{ content }}
       {% include after-content.html %}
-    </div>
-
+    </div>  
+    
     {% if site.search == true %}
       <div class="search-content">
         {% include_cached search/search_form.html %}
