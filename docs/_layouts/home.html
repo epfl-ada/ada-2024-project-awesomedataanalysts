@@ -1,8 +1,23 @@
 ---
 layout: archive
+title: "Welcome to My Website"
+cover_image: "./assets/images/cover_image.jpg"
+author_profile: true
 ---
 
-{{ content }}
+<!-- Cover Image -->
+<!-- <div class="cover">
+  <img src="{{ page.cover_image }}" alt="Cover Image" style="width: 100%; height: auto;">
+</div> -->
+
+<!-- Introduction Section -->
+<section id="introduction">
+  <h2>Abstract</h2>
+  <p>People’s likes and preferences are usually the subject of much attention, but understanding what people actively hate can reveal deeper insights into user satisfaction and product improvement. In this project, we aim to extract the main criticisms of beer reviewers, focusing on the specific qualities and characteristics that generate dissatisfaction among reviewers. By examining a large dataset containing around 7 million reviews collected from the beer review website RateBeer, we investigate how different attributes—such as flavor, alcohol content, appearance, or aroma—impact user ratings and contribute to lower scores. Additionally, we explore patterns in user behavior that indicate negativity beyond typical preferences, potentially identifying if factors like location or cultural expectations affect specific dislikes. We will augment our data with features extracted from textual reviews using text and emotion analysis.</p>
+</section>
+
+<!-- Recent Posts Section -->
+{{ content }} <!-- This is where the posts are displayed -->
 
 <h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: "Recent Posts" }}</h3>
 
@@ -18,3 +33,24 @@ layout: archive
 </div>
 
 {% include paginator.html %}
+
+<!-- Additional Sections -->
+<section id="projects">
+  <h2>My Projects</h2>
+  <p>Check out some of the latest projects I'm working on:</p>
+  <div>
+    {% include box_plot.html %}
+  </div>
+  {{ content }}
+  <ul>
+    <li><a href="/project-1">Project 1</a></li>
+    <li><a href="/project-2">Project 2</a></li>
+    <li><a href="/project-3">Project 3</a></li>
+  </ul>
+</section>
+
+<section id="contact">
+  <h2>Contact Me</h2>
+  <p>If you'd like to get in touch, feel free to reach out via email or social media!</p>
+  <a href="mailto:your-email@example.com">Email Me</a>
+</section>
