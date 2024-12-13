@@ -1,8 +1,8 @@
-
-
 # ADA Project : Light Ale, Big Fail: What Beer Reviewers Hate the Most
 
 ## Description
+
+Link to website data story : https://epfl-ada.github.io/ada-2024-project-awesomedataanalysts/
 
 ### Abstract
 People’s likes and preferences are usually the subject of much attention, but understanding what people actively hate can reveal deeper insights into user satisfaction and product improvement. In this project, we aim to extract the main criticisms of beer reviewers, focusing on the specific qualities and characteristics that generate dissatisfaction among reviewers. By examining a large dataset containing around 7 million reviews collected from the beer review website RateBeer, we investigate how different attributes—such as flavor, alcohol content, appearance, or aroma—impact user ratings and contribute to lower scores. Additionally, we explore patterns in user behavior that indicate negativity beyond typical preferences, potentially identifying if factors like location or cultural expectations affect specific dislikes. We will augment our data with features extracted from textual reviews using text and emotion analysis.
@@ -93,9 +93,9 @@ The directory structure of new project looks like this:
 │
 ├── src                         <- Source code
 │
-├── tests                       <- Tests of any kind
-│
 ├── milestone-2.ipynb           <- milestone 2 notebook containing initial data cleaning and analysis, and basic pipeline
+│
+├── milestone-3.ipynb           <-  milestone 3 notebook containing all final results and data processing for the data story
 │
 ├── .gitignore                  <- List of files ignored by git
 ├── pip_requirements.txt        <- File for installing python dependencies
