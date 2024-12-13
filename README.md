@@ -14,6 +14,7 @@ People’s likes and preferences are usually the subject of much attention, but 
 - Are some users (e.g. by location) more critical of certain characteristics? 
 
 ### Data
+
 While the BeerAdvocate dataset has many more users, RateBeer users are much more active and also more diverse in terms of location. RateBeer users also write more reviews. In fact, RateBeer has 7M reviews (ratings with text) while BeerAdvocate has 2.5M (it has more ratings but we only work on reviews). The plots below indicate that :
 - RateBeer (7M) has more reviews than BeerAdvocate (2.5M)
 - RateBeer has more reviews per beer than BeerAdvocate
@@ -24,13 +25,16 @@ While the BeerAdvocate dataset has many more users, RateBeer users are much more
 ![](images/ba_vs_rb_user_reviews.png)
 ![](images/ba_vs_rb_beer_reviews.png)
 
+Since we are focusing on text analysis on the reviews, we could combine the reviews in both datasets. However as we are interested in high quality reviews and we want to aggregate extracted features on separate beers, we can never be sure that the beers are not already present in the other dataset or not. This would require either approximate matching that could be wrong and produce duplicate results or exact matching using the provided matched_data but there is not enough reviews nor beers to have meaningful features.
 For these reasons we choose to work on the RateBeer dataset, which contains 442k beers, 24k breweries and 70k users. We choose to augment our beer descriptions by extracting beer characteristics from the textual reviews (see task 1). One of the challenges with our data is that some reviews are written in other languages (e.g. Polish), and some have encoding issues. Initially, we wanted to add production data (e.g. fermentation characteristics, etc.) and we found a dataset from [Brewer's Friend](http://www.brewersfriend.com), but unfortunately these aren’t the real recipes for the beers, only imitations and after struggling with matching the beers in our dataset with this new dataset, we decided to abandon this idea.
+The reviews from other languages than english were found using a python library and dropped.
 
 ### Project Plans & Methods
 
 #### Task 1 : extracting beer features from reviews
 We begin by aggregating the reviews and quantitative data for each beer, extracting qualitative features from textual reviews, and combining ratings and other data to compute the specific flavor profile and characteristics of each beer. This allows us to have richer descriptions for further analysis.
 We use lemmatization and tf-idf for textual analysis, and weight the reviewers’ contributions by their “expert” status. We investigate different ways of using tf-idf on our data, and according to our preliminary analysis, even with the amount of data we have, it should run in a few hours at most. For visualization purposes, we use word clouds, world maps and other plots.
+
 #### Task 2 : defining negative reviews
 What makes a review a bad one? We could just look at the rating, but we would miss reviews that have good ratings but have specific complaints (“great beer overall, but the bitterness is too much for me personally”).
 We try different methods:
