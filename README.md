@@ -9,9 +9,9 @@ People’s likes and preferences are usually the subject of much attention, but 
 
 ### Research Questions
 - How can we extract beer characteristics from textual reviews? How do the different characteristics of a beer impact the rating given to the beer?
-- Can we identify the beer characteristics people hate by focusing on the worst reviews?
+- What are the main factors contributing to the hate sentiment towards certain beers?
 - How can we even define a bad review? What patterns can we find when it comes to complaints (e.g. by emotion and sentiment of the text, location, beer styles, brewery location, etc)?
-- Are some users (e.g. by location) more critical of certain characteristics? 
+- Does location correlate with some negative beer feature described by users?
 
 ### Data
 
@@ -40,11 +40,12 @@ What makes a review a bad one? We could just look at the rating, but we would mi
 We try different methods:
 Take the worst rated reviews for each beer, i.e. just the numerical rating.
 Focus on inflammatory keywords often used when complaining, based on our data analysis.
-Text and emotion analysis using a model we found to find specific complaints, even in high-rated reviews. For this to work at the scale of our data, we use a GPU for much faster inference.
+Instead of focusing only on numbers provided by the users we can use focus on the textual explanation of the beer. This has the benefit to try to find negative reviews on the same non biased scale for all beers, whereas the scores provided by the user is prone to bias from other reviews or average score by beer which is displayed when using the RateBeer website. 
+At this end we will use text and emotion analysis obtained from a model we found on hugginface to find specific complaints, even in high-rated reviews. For this to work at the scale of our data, we use a GPU for much faster inference.
 
 #### Task 3 : Identifying the reviewers’ key complaints
-We then extract key complaints from reviews, and find insights into users’ dislikes.
-We use tf-idf to find words that are significant in negative reviews compared to positive ones. This part is really about going into detail about the text analysis : choosing the “n” in n-grams, lemmatization, stripping accents, removing stopwords, how to apply tf-idf specifically, etc.
+We then extract key complaints from reviews by reusing the model for task 2 to tokenize parts of the review and using the emotion of each part, finding the most "angry" part which corresponds to complaints, and thus extracting insights into users’ dislikes.
+We use tf-idf to find words that are significant in negative reviews compared to positive ones, which will enable us to extract specific criticisms by beer. This part is really about going into detail about the text analysis : choosing the “n” in n-grams, lemmatization, stripping accents, removing stopwords, how to apply tf-idf specifically, etc.
 We investigate, among others, the following questions:
 Are certain beer characteristics—such as aroma, appearance, flavor or bitterness—more prone to being disliked (i.e., 'risky')?
 Are there complaints that are specific to a certain type of beer that can be learned from reviews ? 
@@ -63,7 +64,7 @@ Do beers from certain regions have identifiable weaknesses?
 - Leonardo : Task 1, Task 3
 - Luka : Task 2, Task 3
 - Saba : Task 1, Task 3
-- Sama : Task 2, Task 3
+- Sama : Task 2, website
 - Shahrzad : Task 1, Task 3
 
 ## Quickstart
