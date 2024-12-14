@@ -60,7 +60,8 @@ def load_beers_breweries_users(data_path):
     beers = beers.drop(columns=["brewery_name"])
 
     breweries = pd.read_csv(data_path + "/breweries.csv")
-    beers = beers.merge(breweries, left_on="brewery_id", right_on="id", how="left")
+    beers = beers.merge(breweries[["id", "location"]], left_on="brewery_id", right_on="id", how="left")
+    beers = beers.drop(columns=["id"])
 
     users = pd.read_csv(data_path + "/users.csv")
     users["user_id"] = users["user_id"].astype("string")

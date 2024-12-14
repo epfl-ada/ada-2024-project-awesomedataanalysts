@@ -1,18 +1,14 @@
 import numpy as np
 import pandas as pd
 import re
-from string import punctuation
 
 import src.models as models
 
-from gensim import corpora, models
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer, ENGLISH_STOP_WORDS
-
 import nltk
+from nltk.stem import PorterStemmer, SnowballStemmer, WordNetLemmatizer
 from nltk import pos_tag
 from nltk.corpus import stopwords, wordnet
-from nltk.tokenize import word_tokenize
-from nltk.stem import PorterStemmer, SnowballStemmer, WordNetLemmatizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer, ENGLISH_STOP_WORDS
 
 
 TWO_LETTERS_NUMBERS = r"(?u)\b\w\w+\b"
@@ -69,14 +65,14 @@ def get_stop_words(corpus, tokenizer=None, token_pattern=THREE_LETTERS, max_df=0
     stop_words.update(frequent_words)
 
     stop_words = list(stop_words)
-    stop_words.extend(["pours"])
+    stop_words.extend(["pours", "pour", "poured"])
     stop_words.extend([
         'argentina', 'thailand', 'turkey', 'united states', 'us', 'trinidad', 'tobago', 'sri lanka',
         'australia', 'aussie', 'australian', 'spain', 'austria', 'belgium', 'brazil', 'brazilian',
         'canada', 'china', 'czech', 'denmark', 'england', 'finland', 'france', 'germany', 'greece',
         'india', 'ireland', 'italy', 'jamaica', 'japan', 'kenya', 'mexico', 'netherlands', 'norway',
         'poland', 'russia', 'scotland', 'singapore', 'chinese', 'french', 'irish', 'italian',
-        'jamaican', 'japanese', 'africa', 'african', 'mexican', 'alaska', 'alaskan'
+        'jamaican', 'japanese', 'africa', 'african', 'mexican', 'alaska', 'alaskan', 'german'
     ])
     #stop_words.extend(["aaaagghh", "aaagh", "aaah", "meh"])
 
@@ -86,10 +82,11 @@ def get_stop_words(corpus, tokenizer=None, token_pattern=THREE_LETTERS, max_df=0
     return stop_words
 
 def get_word_counts(corpus, beer_names, tokenizer=None, token_pattern=THREE_LETTERS, **vectorizer_kwargs):
-    """Get the word counts in the corpus. When using a tokenizer, this takes some time.
+    """Get the word counts in the corpus. This takes some time, especially when using a tokenizer.
 
     This is separate from computing the tf-idf scores because we may want to do something simple
-    like subtracting frequencies when looking for negative words."""
+    like subtracting frequencies when looking for negative words.
+    """
     if tokenizer is not None:
         tokenizer = tokenizer(token_pattern=token_pattern)
 
@@ -130,12 +127,67 @@ def get_top_attributes(scores, top_attributes=10, column_prefix="attr_"):
 
     return attributes
 
-def split_worst_and_best_reviews(reviews, percent=10):
-    percentiles = reviews.groupby("beer_name")["rating"].quantile(percent / 100).rename("percentile")
-    reviews = reviews.merge(percentiles, on="beer_name")
-    worst_reviews = reviews[reviews["rating"] <= reviews["percentile"]]
-    best_reviews = reviews[reviews["rating"] > reviews["percentile"]]
-    return worst_reviews, best_reviews
+def top_attributes_by(beers, by, top_count=5, column_count=10, column_prefix="attr_"):
+    attributes = beers.melt(
+        id_vars=by, 
+        value_vars=[f'{column_prefix}{i+1}' for i in range(column_count)],
+        var_name='attribute_type', 
+        value_name='attribute'
+    )
+
+    attribute_counts = attributes.groupby([by, 'attribute']).size().reset_index(name='count')
+
+    top_attributes = (
+        attribute_counts.sort_values(by=[by, 'count'], ascending=[True, False])
+        .groupby(by)
+        .head(top_count)
+    )
+
+    top_attributes_pivoted = (
+        top_attributes.assign(rank=top_attributes.groupby(by).cumcount() + 1)
+        .pivot(index=by, columns='rank', values='attribute')
+        .reset_index()
+    )
+
+    top_attributes_pivoted.columns = [by] + [f"top_{column_prefix}{i+1}" for i in range(top_count)]
+
+    return top_attributes_pivoted
+
+from transformers import pipeline
+from src.utils import tqdm
+
+def classify_beer_attributes(beers, column_count=10, column_prefix="attr_", device="cuda"):
+    top_attributes = beers[["beer_name"] + [f"{column_prefix}{i+1}" for i in range(column_count)]].set_index("beer_name")
+    print(beers[f"{column_prefix}11"])
+
+    classified_attributes = pd.DataFrame(columns=["appearance", "aroma", "palate", "taste"], index=top_attributes.index)
+    classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=device)
+    categories = ["appearance", "aroma", "palate", "taste"]
+
+    for i in tqdm(np.arange(top_attributes.shape[0])):
+        features = top_attributes.iloc[i].values
+        appearance = []
+        aroma = []
+        palate = []
+        taste = []
+        for feature in features:
+            result = classifier(feature, candidate_labels=categories)
+            if result['labels'][0] == "appearance" and result['scores'][0]>0.5:
+                appearance.append(feature)
+            elif result['labels'][0] == "aroma" and result['scores'][0]>0.5:
+                aroma.append(feature)
+            elif result['labels'][0] == "palate" and result['scores'][0]>0.5:
+                palate.append(feature)
+            elif result['labels'][0] == "taste" and result['scores'][0]>0.5:
+                taste.append(feature)
+            #print(f"Feature: {feature}")
+            #print(f"Predicted Category: {result['labels'][0]} (Score: {result['scores'][0]:.4f})\n")
+        classified_attributes.loc[top_attributes.index[i], 'appearance'] = appearance
+        classified_attributes.loc[top_attributes.index[i], 'aroma'] = aroma
+        classified_attributes.loc[top_attributes.index[i], 'palate'] = palate
+        classified_attributes.loc[top_attributes.index[i], 'taste'] = taste
+
+    return classified_attributes
 
 
 def get_complaints_by_topic(topic_by_beer, tokens_feeling, topic_id):
@@ -181,6 +233,3 @@ def lda_by_beers(reviews, nb_topics):
     # pd.to_pickle(grouped_data, "lda_by_beer/results_lda.pkl")
 
     return grouped_data
-
-def split_review(review):
-    return re.split('\\;|\\,|\\.', review) # tokenize on sentences (by . , or ;)
