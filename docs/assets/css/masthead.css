@@ -3,7 +3,7 @@
   position: sticky;
   top: 0;  /* Sticks to the top of the page */
   z-index: 1000;  /* Keeps the header on top of other content */
-  background-color: transparent;  /* Keeps original background */
+  background-color: #FFFFE0; /* Light yellow */
   display: flex;
   justify-content: center;
   align-items: center;
