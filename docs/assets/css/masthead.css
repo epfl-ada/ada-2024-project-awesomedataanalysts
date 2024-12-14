@@ -1,0 +1,65 @@
+/* General styling for the masthead container */
+.masthead {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8f9fa; /* Light background color, adjust as needed */
+    border-bottom: 1px solid #ddd; /* Optional: a subtle border under the masthead */
+  }
+  
+  /* Inner wrapper to align content horizontally */
+  .masthead__inner-wrap {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between logo and title */
+  }
+  
+  /* Logo styling */
+  .site-logo img {
+    max-height: 50px; /* Adjust logo height */
+    width: auto; /* Maintain aspect ratio */
+  }
+  
+  /* Title styling */
+  .site-title {
+    font-size: 2rem; /* Larger font size for prominence */
+    font-weight: bold; /* Make the title bold */
+    text-decoration: none; /* Remove underline from the title link */
+    color: #333; /* Dark gray text color */
+  }
+  
+  /* Subtitle styling (if used) */
+  .site-subtitle {
+    display: block; /* Ensure subtitle is below the title */
+    font-size: 1rem; /* Smaller font size for subtitle */
+    color: #666; /* Lighter gray text for subtitle */
+  }
+  
+  /* Hover effect for the title */
+  .site-title:hover {
+    text-decoration: underline; /* Optional: underline on hover */
+    color: #007bff; /* Optional: change color on hover */
+  }
+  
+  /* Responsive design: Adjust spacing and alignment for smaller screens */
+  @media (max-width: 768px) {
+    .masthead {
+      flex-direction: column; /* Stack logo and title vertically */
+      padding: 10px;
+    }
+  
+    .masthead__inner-wrap {
+      flex-direction: column; /* Stack content vertically */
+      gap: 10px; /* Adjust spacing for smaller screens */
+    }
+  
+    .site-title {
+      font-size: 1.5rem; /* Reduce title size for smaller screens */
+    }
+  
+    .site-logo img {
+      max-height: 40px; /* Adjust logo size for smaller screens */
+    }
+  }
+  
