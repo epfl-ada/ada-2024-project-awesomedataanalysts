@@ -1,0 +1,61 @@
+/* General styling for the masthead container */
+.masthead {
+  position: sticky;
+  top: 0;  /* Sticks to the top of the page */
+  z-index: 1000;  /* Keeps the header on top of other content */
+  background-color: #FFFFE0; /* Light yellow */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+
+/* Inner wrapper to align content horizontally */
+.masthead__inner-wrap {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Logo styling - Set a smaller max height */
+.site-logo img {
+  max-height: 50px; /* Adjust logo height */
+  width: auto; /* Maintain aspect ratio */
+}
+
+/* Title styling */
+.site-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #8B0000; /* Keep text color as needed */
+}
+
+/* Hover effect for the title */
+.site-title:hover {
+  text-decoration: underline;
+  color: #007bff;
+}
+
+/* Responsive design: Adjust spacing and alignment for smaller screens */
+@media (max-width: 768px) {
+  .masthead {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .masthead__inner-wrap {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .site-title {
+    font-size: 1.5rem;
+  }
+
+  .site-logo img {
+    max-height: 40px; /* Adjust logo size for smaller screens */
+  }
+}
