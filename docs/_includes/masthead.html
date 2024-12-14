@@ -1,18 +1,12 @@
-{% capture logo_path %}{{ site.logo }}{% endcapture %}
-
 <div class="masthead">
   <div class="masthead__inner-wrap">
-    <div class="masthead__logo-title">
-      {% unless logo_path == empty %}
-        <!-- Display the logo -->
-        <a class="site-logo" href="{{ '/' | relative_url }}">
-          <img src="{{ logo_path | relative_url }}" alt="{{ site.masthead_title | default: site.title }}">
-        </a>
-      {% endunless %}
-      <!-- Display the title beside the logo -->
-      <a class="site-title" href="{{ '/' | relative_url }}">
-        <span class="title-text">{{ site.masthead_title | default: site.title }}</span>
+    {% unless logo_path == empty %}
+      <a class="site-logo" href="{{ '/' | relative_url }}">
+        <img src="{{ logo_path | relative_url }}" alt="{{ site.masthead_title | default: site.title }}">
       </a>
-    </div>
+    {% endunless %}
+    <a class="site-title" href="{{ '/' | relative_url }}">
+      Beer Haters
+    </a>
   </div>
 </div>
