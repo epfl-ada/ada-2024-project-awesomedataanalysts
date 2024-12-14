@@ -9,10 +9,9 @@
           <img src="{{ logo_path | relative_url }}" alt="{{ site.masthead_title | default: site.title }}">
         </a>
       {% endunless %}
-      <!-- Display the title -->
+      <!-- Display the title beside the logo -->
       <a class="site-title" href="{{ '/' | relative_url }}">
         <span class="title-text">{{ site.masthead_title | default: site.title }}</span>
-        {% if site.subtitle %}<span class="site-subtitle">{{ site.subtitle }}</span>{% endif %}
       </a>
     </div>
   </div>
