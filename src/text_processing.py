@@ -128,9 +128,16 @@ def get_top_attributes(scores, top_attributes=10, column_prefix="attr_"):
     return attributes
 
 def top_attributes_by(beers, by, top_count=5, column_count=10, column_prefix="attr_"):
+    if type(column_prefix) is str:
+        column_prefix = [column_prefix]
+
+    value_vars = []
+    for col_pref in column_prefix:
+        value_vars.extend([f'{col_pref}{i+1}' for i in range(column_count)])
+
     attributes = beers.melt(
         id_vars=by, 
-        value_vars=[f'{column_prefix}{i+1}' for i in range(column_count)],
+        value_vars=value_vars,
         var_name='attribute_type', 
         value_name='attribute'
     )
@@ -149,7 +156,7 @@ def top_attributes_by(beers, by, top_count=5, column_count=10, column_prefix="at
         .reset_index()
     )
 
-    top_attributes_pivoted.columns = [by] + [f"top_{column_prefix}{i+1}" for i in range(top_count)]
+    top_attributes_pivoted.columns = [by] + [f"top_{''.join(column_prefix)}{i+1}" for i in range(top_count)]
 
     return top_attributes_pivoted
 
