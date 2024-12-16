@@ -12,14 +12,14 @@ author_profile: true
 
 <!-- Introduction Section -->
 <section id="introduction">
-  <h2>Abstract</h2>
-  <p>People’s likes and preferences are usually the subject of much attention, but understanding what people actively hate can reveal deeper insights into user satisfaction and product improvement. In this project, we aim to extract the main criticisms of beer reviewers, focusing on the specific qualities and characteristics that generate dissatisfaction among reviewers. By examining a large dataset containing around 7 million reviews collected from the beer review website RateBeer, we investigate how different attributes—such as flavor, alcohol content, appearance, or aroma—impact user ratings and contribute to lower scores. Additionally, we explore patterns in user behavior that indicate negativity beyond typical preferences, potentially identifying if factors like location or cultural expectations affect specific dislikes. We will augment our data with features extracted from textual reviews using text and emotion analysis.</p>
+  <h2>Introduction</h2>
+  <p>Input Text Here</p>
 </section>
 
 <!-- Recent Posts Section -->
-{{ content }} <!-- This is where the posts are displayed -->
+<!-- {{ content }} This is where the posts are displayed -->
 
-<h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: "Recent Posts" }}</h3>
+<!-- <h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: "Recent Posts" }}</h3>
 
 {% if paginator %}
   {% assign posts = paginator.posts %}
@@ -32,23 +32,39 @@ author_profile: true
   {% include documents-collection.html entries=posts type=entries_layout %}
 </div>
 
-{% include paginator.html %}
+{% include paginator.html %} -->
 
 
-<section id="introduction">
+<section id="Body1">
   <h2>Exploring the Brew: Unveiling Insights from Beer Reviews</h2>
+  <h4>The Experts: Who Holds the Mic?</h4>
+  <p>Input Text Here</p>
+  <h4>Extracting Key Features</h4>
+  <p>Input Text Here</p>
   <div>
     <h4>Geographical Analysis </h4>
     {% include Geographic_Distribution.html %}
   </div>
 </section>
 
-<section id="projects">
-  <h2>My Projects</h2>
-  <p>Check out some of the latest projects I'm working on:</p>
+<section id="Body2">
+  <h2>Decoding complaints : the language of discontent</h2>
+  <p>Input Text Here</p>
+
   <div>
     {% include box_plot.html %}
  </div>
+</section>
+
+
+<section id="Body3">
+  <h2>Following the Clues: What Drives Negativity?</h2>
+  <p>Input Text Here</p>
+</section>
+
+<section id="Conclusion">
+  <h2>Conclusion: Avoiding the Pitfalls</h2>
+  <p>Input Text Here</p>
 </section>
 
   <!-- {{ content }}
