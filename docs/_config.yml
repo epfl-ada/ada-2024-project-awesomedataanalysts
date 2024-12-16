@@ -116,7 +116,7 @@ author:
   name             : "Light Ale, Big Fail: What Beer Reviewers Hate the Most"
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "Table of Content"
-  location         : |
+  location         : >
     Data Analysis Research Center
     EPFL, Lausanne
   email            :
