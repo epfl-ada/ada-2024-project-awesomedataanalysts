@@ -1,0 +1,48 @@
+.story-brewers {
+    background-color: #CD7F32; /* Amber option */
+    padding: 4rem 2rem;
+    color: white;
+    text-align: center;
+}
+
+.brewers-title {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.brewers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.brewer-card {
+    padding: 1.5rem;
+}
+
+.brewer-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.department {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.quote {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .brewers-grid {
+        grid-template-columns: 1fr;
+    }
+}
