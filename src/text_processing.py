@@ -163,16 +163,15 @@ def top_attributes_by(beers, by, top_count=5, column_count=10, column_prefix="at
 from transformers import pipeline
 from src.utils import tqdm
 
-def classify_beer_attributes(beers, column_count=10, column_prefix="attr_", device="cuda"):
-    top_attributes = beers[["beer_name"] + [f"{column_prefix}{i+1}" for i in range(column_count)]].set_index("beer_name")
-    print(beers[f"{column_prefix}11"])
-
-    classified_attributes = pd.DataFrame(columns=["appearance", "aroma", "palate", "taste"], index=top_attributes.index)
+def classify_beer_attributes(criticisms, device="cuda", by = 'location'):
+    top_attributes = criticisms
+    classified_criticisms = pd.DataFrame(columns=["appearance", "aroma", "palate", "taste"], index=top_attributes[by])
     classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=device)
     categories = ["appearance", "aroma", "palate", "taste"]
 
     for i in tqdm(np.arange(top_attributes.shape[0])):
-        features = top_attributes.iloc[i].values
+    
+        features = top_attributes.iloc[i, 1::].dropna().values
         appearance = []
         aroma = []
         palate = []
@@ -187,15 +186,13 @@ def classify_beer_attributes(beers, column_count=10, column_prefix="attr_", devi
                 palate.append(feature)
             elif result['labels'][0] == "taste" and result['scores'][0]>0.5:
                 taste.append(feature)
-            #print(f"Feature: {feature}")
-            #print(f"Predicted Category: {result['labels'][0]} (Score: {result['scores'][0]:.4f})\n")
-        classified_attributes.loc[top_attributes.index[i], 'appearance'] = appearance
-        classified_attributes.loc[top_attributes.index[i], 'aroma'] = aroma
-        classified_attributes.loc[top_attributes.index[i], 'palate'] = palate
-        classified_attributes.loc[top_attributes.index[i], 'taste'] = taste
+            
+        classified_criticisms.loc[top_attributes.iloc[i, 0], 'appearance'] = appearance
+        classified_criticisms.loc[top_attributes.iloc[i, 0], 'aroma'] = aroma
+        classified_criticisms.loc[top_attributes.iloc[i, 0], 'palate'] = palate
+        classified_criticisms.loc[top_attributes.iloc[i, 0], 'taste'] = taste
 
-    return classified_attributes
-
+    return classified_criticisms
 
 def get_complaints_by_topic(topic_by_beer, tokens_feeling, topic_id):
     tokens_feeling = tokens_feeling[tokens_feeling["max_feel"] == "sadness"]
