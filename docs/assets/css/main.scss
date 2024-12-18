@@ -8,4 +8,6 @@ search: false
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
 @import "minimal-mistakes"; // main partials
 
-$max-width: calc(100vw - 200px);
+.page {
+    $max-width: calc(100vw - 200px);
+}
