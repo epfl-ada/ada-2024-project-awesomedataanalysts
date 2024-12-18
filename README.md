@@ -5,7 +5,7 @@
 Link to website data story : https://epfl-ada.github.io/ada-2024-project-awesomedataanalysts/
 
 ### Abstract
-Let’s be honest, people love to complain (especially the french). Whether it's about a movie or a pint of beer, when it comes to dislikes, people get straight to the point. Instead of just focusing on what people love, we're diving deep into what they hate about their beer. Complaints hold clues, they are raw and unfiltered, and reveal exactly what really matters to people and where a particular product falls short.
+People’s likes and preferences are usually the subject of much attention, but let’s be honest, people LOVE to complain (especially the french). Whether it's about a movie or a pint of beer, when it comes to dislikes, people get straight to the point. Instead of just focusing on what people love, we're diving deep into what they hate about their beer. Complaints hold clues, they are raw and unfiltered, and reveal exactly what really matters to people and where a particular product falls short.
 The secret to making this work ? Data, so much data. In this project, we use 7 million beer reviews from the beer review RateBeer, where tens of thousands of reviewers have described their experiences with tens of thousands of beers. By analyzing reviewers' main critiques across key attributes like aroma, flavor, beer style or country of origin, we aim to precisely pinpoint what people hate. Because the key to making the good stuff is understanding the bad stuff.
 
 ### Research Questions
