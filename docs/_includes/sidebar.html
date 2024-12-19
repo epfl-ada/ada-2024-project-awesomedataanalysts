@@ -13,6 +13,9 @@
     {% endfor %}
     {% if page.sidebar.nav %}
       {% include nav_list nav=page.sidebar.nav %}
+      <div class="toc">
+        {% include toc.html %}
+      </div>
     {% endif %}
   {% endif %}
   </div>

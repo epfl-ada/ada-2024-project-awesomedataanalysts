@@ -5,67 +5,70 @@
 Link to website data story : https://epfl-ada.github.io/ada-2024-project-awesomedataanalysts/
 
 ### Abstract
-People’s likes and preferences are usually the subject of much attention, but understanding what people actively hate can reveal deeper insights into user satisfaction and product improvement. In this project, we aim to extract the main criticisms of beer reviewers, focusing on the specific qualities and characteristics that generate dissatisfaction among reviewers. By examining a large dataset containing around 7 million reviews collected from the beer review website RateBeer, we investigate how different attributes—such as flavor, alcohol content, appearance, or aroma—impact user ratings and contribute to lower scores. Additionally, we explore patterns in user behavior that indicate negativity beyond typical preferences, potentially identifying if factors like location or cultural expectations affect specific dislikes. We will augment our data with features extracted from textual reviews using text and emotion analysis.
+People’s likes and preferences are usually the subject of much attention, but let’s be honest, people LOVE to complain (especially the french). Whether it's about a movie or a pint of beer, when it comes to dislikes, people get straight to the point. Instead of just focusing on what people love, we're diving deep into what they hate about their beer. Complaints hold clues, they are raw and unfiltered, and reveal exactly what really matters to people and where a particular product falls short.
+The secret to making this work ? Data, so much data. In this project, we use 7 million beer reviews from the beer review RateBeer, where tens of thousands of reviewers have described their experiences with tens of thousands of beers. By analyzing reviewers' main critiques across key attributes like aroma, flavor, beer style or country of origin, we aim to precisely pinpoint what people hate. Because the key to making the good stuff is understanding the bad stuff.
 
 ### Research Questions
-- How can we extract beer characteristics from textual reviews? How do the different characteristics of a beer impact the rating given to the beer?
+- Can we extract beer characteristics and criticisms from textual reviews?
 - What are the main factors contributing to the hate sentiment towards certain beers?
-- How can we even define a bad review? What patterns can we find when it comes to complaints (e.g. by emotion and sentiment of the text, location, beer styles, brewery location, etc)?
-- Does location correlate with some negative beer feature described by users?
+- What are factors that make up a "negative" review?
+- What characteristic of a beer is a specific criticism aimed at?
+- Do beers from certain regions have identifiable weaknesses? What are the main criticisms for each beer style?
 
 ### Data
 
-While the BeerAdvocate dataset has many more users, RateBeer users are much more active and also more diverse in terms of location. RateBeer users also write more reviews. In fact, RateBeer has 7M reviews (ratings with text) while BeerAdvocate has 2.5M (it has more ratings but we only work on reviews). The plots below indicate that :
-- RateBeer (7M) has more reviews than BeerAdvocate (2.5M)
-- RateBeer has more reviews per beer than BeerAdvocate
-- RateBeer has more reviews per users than BeerAdvocate
-- Around 60% of RateBeer users are outside of the US, while a vast majority of the BeerAdvocate users are US-based, which might make analysis by location not very significant statistically
+We are provided with textual reviews and beer ratings, covering the years from 2001 to 2017. This data is extracted from 2 beer review websites : RateBeer and BeerAdvocate. The reviews are written by users of the website. The 2 datasets contain the same features. We will mostly work on the text-based features : written review, beer style, location, etc. We choose to work on RateBeer, and not BeerAdvocate or a combination of both, for the following reasons.
 
-![](images/ba_vs_rb_users.png)
-![](images/ba_vs_rb_user_reviews.png)
+We analyze beers, not users, so in a nutshell we need many beers with many reviews. Also, our idea is to extract information from textual reviews, so the numerical ratings themselves are unimportant. For this reason, we care about
+- The number of textual reviews : RateBeer has 7M, versus BeerAdvocate's 2.5M.
+- The distribution of the number of reviews by beer : RateBeer has more beers with many reviews, compared to BeerAdvocate. See plot below.
+- The geographic diversity of the beers reviewed (for analysis by location) : RateBeer beers are much more international, while a majority of BeerAdvocate beers are from the USA, which makes analysis by location not very significant statistically for countries outside the USA. (Note that RateBeer users are also more international than BeerAdvocate users, but this is not the topic of our analysis.)
+
 ![](images/ba_vs_rb_beer_reviews.png)
 
-Since we are focusing on text analysis on the reviews, we could combine the reviews in both datasets. However as we are interested in high quality reviews and we want to aggregate extracted features on separate beers, we can never be sure that the beers are not already present in the other dataset or not. This would require either approximate matching that could be wrong and produce duplicate results or exact matching using the provided matched_data but there is not enough reviews nor beers to have meaningful features.
-For these reasons we choose to work on the RateBeer dataset, which contains 442k beers, 24k breweries and 70k users. We choose to augment our beer descriptions by extracting beer characteristics from the textual reviews (see task 1). One of the challenges with our data is that some reviews are written in other languages (e.g. Polish), and some have encoding issues. Initially, we wanted to add production data (e.g. fermentation characteristics, etc.) and we found a dataset from [Brewer's Friend](http://www.brewersfriend.com), but unfortunately these aren’t the real recipes for the beers, only imitations and after struggling with matching the beers in our dataset with this new dataset, we decided to abandon this idea.
-The reviews from other languages than english were found using a python library and dropped.
+
+We choose not to work on a combination of both datasets, because
+- There is overlap between the two datasets (some beers appear in both), but matching them precisely is difficult. The beer and brewery names differ slightly in the datasets, so we would need to rely on text similarity. The provided matched data only includes beers that are clearly the same (based on similar names and breweries with no ambiguity, see [When Sheep Shop: Measuring Herding Effects in Product Ratings with Natural Experiments](https://dlab.epfl.ch/people/west/pub/Lederrey-West_WWW-18.pdf)). While this ensures accuracy, it significantly reduces the amount of data to avoid false matches. If we merged the datasets this way, we’d lose a lot of data due to these ambiguities. Alternatively, we could combine the datasets without worrying about duplicate beers, but this would not be rigorous from a data analysis standpoint.
+- Our analysis of RateBeer already pushes the limits of the hardware we have. For example, running text analysis methods takes a long time: a few hours for attribute and criticism extraction using tf-idf, a few hours for criticism classification, and overnight for emotion analysis. Adding more data would likely increase computation time and memory requirements beyond what we can handle.
+- Combining the two datasets would skew the geographic diversity since BeerAdvocate’s beers are mostly from the USA. This isn’t necessarily a problem, but we already have plenty of data for beers from the USA. Instead, data from underrepresented regions, like Eastern Europe, where reviews are currently lacking, would be more valuable and may be worth the extra effort.
+
+We choose to augment our beer descriptions by extracting beer characteristics from the textual reviews (see tasks). Non-english reviews were identified with [langid](https://github.com/saffsd/langid.py) and dropped.
+
+Initially, we wanted to add production data (e.g. fermentation characteristics, etc.) and we found a dataset from [Brewer's Friend](http://www.brewersfriend.com), but unfortunately these aren’t the real recipes for the beers, only imitations by brewers who try to emulate the taste, so we decided to abandon this idea.
 
 ### Project Plans & Methods
 
-#### Task 1 : extracting beer features from reviews
-We begin by aggregating the reviews and quantitative data for each beer, extracting qualitative features from textual reviews, and combining ratings and other data to compute the specific flavor profile and characteristics of each beer. This allows us to have richer descriptions for further analysis.
-We use lemmatization and tf-idf for textual analysis, and weight the reviewers’ contributions by their “expert” status. We investigate different ways of using tf-idf on our data, and according to our preliminary analysis, even with the amount of data we have, it should run in a few hours at most. For visualization purposes, we use word clouds, world maps and other plots.
+#### Task 1 : Defining The Corpus
 
-#### Task 2 : defining negative reviews
-What makes a review a bad one? We could just look at the rating, but we would miss reviews that have good ratings but have specific complaints (“great beer overall, but the bitterness is too much for me personally”).
-We try different methods:
-Take the worst rated reviews for each beer, i.e. just the numerical rating.
-Focus on inflammatory keywords often used when complaining, based on our data analysis.
-Instead of focusing only on numbers provided by the users we can use focus on the textual explanation of the beer. This has the benefit to try to find negative reviews on the same non biased scale for all beers, whereas the scores provided by the user is prone to bias from other reviews or average score by beer which is displayed when using the RateBeer website. 
-At this end we will use text and emotion analysis obtained from a model we found on hugginface to find specific complaints, even in high-rated reviews. For this to work at the scale of our data, we use a GPU for much faster inference.
+The main focus of our analysis is the textual reviews of the different beers. As such, we choose to restrict our analysis to beers with more than 300 reviews.
+First, non-english reviews are dropped, then the text is converted to lowercase, accents are removed, and the encoding of the apostrophe character ’ is fixed (it is encoded as â\x80\x99 in the data). For tokenizing, we select words with 3 or more characters [a-z] (no numbers), and we further use lemmatization to get to the core of each word, eg ignoring the difference "sucks" and "sucked".
+Then we introduce "expert" users, whose contributions are given a bigger weight as their experience is extremely valuable. We select the experts to be those that are in the top 5% of users with the most reviews, and we give their reviews five-fold the importance.
+Finally, to build the corpus we concatenate each beer's reviews as one large text (for experts we concatenate their review 5 times instead of 1). Later, when we discuss positive and negative reviews, each beer will instead have one text for positive reviews and another for negative reviews.
 
-#### Task 3 : Identifying the reviewers’ key complaints
-We then extract key complaints from reviews by reusing the model for task 2 to tokenize parts of the review and using the emotion of each part, finding the most "angry" part which corresponds to complaints, and thus extracting insights into users’ dislikes.
-We use tf-idf to find words that are significant in negative reviews compared to positive ones, which will enable us to extract specific criticisms by beer. This part is really about going into detail about the text analysis : choosing the “n” in n-grams, lemmatization, stripping accents, removing stopwords, how to apply tf-idf specifically, etc.
-We investigate, among others, the following questions:
-Are certain beer characteristics—such as aroma, appearance, flavor or bitterness—more prone to being disliked (i.e., 'risky')?
-Are there complaints that are specific to a certain type of beer that can be learned from reviews ? 
-What insights could we provide to breweries?
-Do people in certain regions have common complaints or higher expectations?
-Do beers from certain regions have identifiable weaknesses?
+#### Task 2 : Extracting Beer Characteristics And Criticisms
+
+There are 2 types of features we are interested in : characteristics that describe a beer, and criticisms regarding a beer. To extract beer attributes, we define the corpus as explained in task 1, and we do term-frequency-inverse-document-frequency (tf-idf) analysis (and choose the words with the highest scores) to extract the specific words that describe each beer. We only consider 1-grams (words) because 2-grams and higher weren't very good. We also choose to remove words that appear too often in the english (eg and) or too often in our corpus (eg beer), to really focus on specifics.
+To extract criticisms, we first split the reviews into two sets, the first is called "positive" reviews while the other is called "negative" reviews, and create one positive corpus and one negative corpus. We use 2 methods for splitting the reviews. The first one is simple, we consider the numerical rating given by the reviewer and split at the 10th quantile. Anything above is "positive", anything below is "negative". This approach of comparing high-rated and low-rated reviews works well for finding obvious criticisms, as low-rated reviews tend to be straightforward and direct about negative feedback. For the second method, we use the emotion analysis model [Emotion English DistilRoBERTa-base](https://huggingface.co/j-hartmann/emotion-english-distilroberta-base) specifically on high-rated reviews, hoping to extract more subtle or mixed feedback. For example, a positive review might include some constructive criticism, but it can be harder to spot since the overall tone is positive. Specifically, we split the reviews into sentences and then classify their emotional tone, selecting "positive" text as corresponding to emotions joy an neutral, and "negative" text as disgust and sadness.
+With these 2 ways to define the positive and negative corpus, we can now run tf-idf analysis on the positive and negative corpus separately, and then for each word, we subtract its score for the negative corpus by its score for the positive corpus, ensuring that words that are specific only to negative reviews (eg criticism) are extracted.
+
+#### Task 3 : Identifying Key Complaints
+
+To better understand the attributes we extract in task 2, we classify the extracted features using the [bart-large-mnli](https://huggingface.co/facebook/bart-large-mnli) model into the following categories : appearance, aroma, palate and taste.
+To identify key insights into users' dislikes, we aggregate and visualize beer characteristics and criticism by brewery location and beer style. We also tried to aggregate by alcohol content by first discretizing into intervals, but the results were not conclusive.
 
 #### Timeline
 - 15.11 Load and clean the data, do the pre-analysis
 - 22.11 Refine the story
 - 06.12 Implement tasks 1, 2 and 3
-- 13.12 Finish the final presentation to submit
-- 20.12 Milestone 3 deadline, finalize the Github page
+- 13.12 Finish the final notebook to submit
+- 20.12 Milestone 3 deadline, finish the website
 
 #### Team Organization
-- Leonardo : Task 1, Task 3
-- Luka : Task 2, Task 3
-- Saba : Task 1, Task 3
-- Sama : Task 2, website
-- Shahrzad : Task 1, Task 3
+- Leonardo : defining the corpus (task 1), tf-idf analysis (task 2), story writing 
+- Luka : emotion analysis (task 2), story writing 
+- Saba : tf-idf analysis (task 2), feature classification (task 3), story writing 
+- Sama : plotting, website deployment and editing, story writing 
+- Shahrzad : plotting, website deployment and editing, story writing 
 
 ## Quickstart
 
@@ -84,7 +87,7 @@ pip install -r pip_requirements.txt
 ```
 
 Download `RateBeer.tar.gz` package from this [Google Drive](https://drive.google.com/drive/folders/1Wz6D2FM25ydFw_-41I9uTwG9uNsN4TCF?usp=sharing).
-Extract data, and put it into the data folder at the root. The expected structure should be data/RateBeer/beers.csv, data/RateBeer/users.csv, data/RateBeer/reviews.txt, data/RateBeer/ratings.txt, data/RateBeer/breweries.csv
+Extract data, and put it into the data folder at the root. The expected structure should be `data/RateBeer/beers.csv`, `data/RateBeer/users.csv`, `data/RateBeer/reviews.txt`, `data/RateBeer/ratings.txt`, `data/RateBeer/breweries.csv`.
 
 
 
@@ -98,9 +101,7 @@ The directory structure of new project looks like this:
 │
 ├── src                         <- Source code
 │
-├── milestone-2.ipynb           <- milestone 2 notebook containing initial data cleaning and analysis, and basic pipeline
-│
-├── milestone-3.ipynb           <-  milestone 3 notebook containing all final results and data processing for the data story
+├── milestone-3.ipynb           <- milestone 3 notebook containing all final results and data processing for the data story
 │
 ├── .gitignore                  <- List of files ignored by git
 ├── pip_requirements.txt        <- File for installing python dependencies
