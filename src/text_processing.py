@@ -148,7 +148,7 @@ def top_attributes_by(beers, by, top_count=5, column_count=10, column_prefix="at
     attribute_counts = attributes.groupby([by, 'attribute']).size().reset_index(name='count')
 
     top_attributes = (
-        attribute_counts.sort_values(by=[by, 'count'], ascending=[True, False])
+        attribute_counts.sort_values(by='count', ascending=False)
         .groupby(by)
         .head(top_count)
     )
@@ -160,6 +160,7 @@ def top_attributes_by(beers, by, top_count=5, column_count=10, column_prefix="at
     )
 
     top_attributes_pivoted.columns = [by] + [f"top_{''.join(column_prefix)}{i+1}" for i in range(top_count)]
+    top_attributes_pivoted = top_attributes_pivoted.set_index(by)
 
     return top_attributes_pivoted
 
