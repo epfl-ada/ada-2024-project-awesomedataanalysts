@@ -21,7 +21,7 @@ author_profile: true
 
 <!-- Introduction Section -->
 <section id="introduction" style="padding: 20px; font-family: 'Georgia', sans-serif;">
-  <h2 style="font-size: 28px; font-weight: 700; color: #00008B;">Introduction</h2>
+  <h2 style="font-size: 28px; font-weight: 700; color: #bc531e;">Introduction</h2>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Imagine walking into a lively bar, the air thick with conversation. Beer enthusiasts are swapping opinions, gesturing with half-full glasses as they debate the merits of a stout versus a lager. One table buzzes with excitement over a citrusy IPA, while another tells a story about an “angry and aggressive beer,” proudly exclaiming “Pilsners no longer scare me”! (text from RateBeer reviews).</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Now imagine trying to make sense of it all. Could we take the flood of reviews—millions of voices—and decode what people love and, more importantly, what they absolutely hate about beer? Understanding these dislikes allows breweries to refine their offerings, cater to broader audiences, and enhance their reputation by eliminating recurring complaints.</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">That’s our mission. By diving into reviews, we’re not just chasing flavors; we’re tracking down frustrations, decoding complaints, and uncovering the secrets of beers that win hearts instead of breaking them.</p>
@@ -36,7 +36,7 @@ author_profile: true
 {{ content }}
 
 <section id="Body1" style="padding: 20px; font-family: 'Georgia', sans-serif;">
-  <h2 style="font-size: 28px; font-weight: 700; color: #00008B;">Exploring the Brew: Unveiling Insights from Beer Reviews</h2>
+  <h2 style="font-size: 28px; font-weight: 700; color: #bc531e;">Exploring the Brew: Unveiling Insights from Beer Reviews</h2>
   <h4 style="font-size: 20px; font-weight: 700; color: #D69A3B;">The Experts: Who Holds the Mic?</h4>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Not all reviewers are created equal. Some leave one-liners, saying they enjoyed the beer, with little added detail. Others craft vivid descriptions that transport you straight into their tasting experience. Meet the experts—reviewers who’ve spent years tasting, documenting, and perfecting the art of beer critique. Let’s take a look at 3 reviews for the Canadian beer Dieu du Ciel Aphrodisiaque. Can you spot the outlier?</p>
   
@@ -65,14 +65,14 @@ author_profile: true
 </section>
 
 <section id="Body2" style="padding: 20px; font-family: 'Georgia', sans-serif;">
-  <h2 style="font-size: 28px; font-weight: 700; color: #00008B;">Decoding Complaints: The Language of Discontent</h2>
+  <h2 style="font-size: 28px; font-weight: 700; color: #bc531e;">Decoding Complaints: The Language of Discontent</h2>
 
-  <h4 style="font-size: 20px; font-weight: 700; color: #bc531e;">The Language of Negativity</h4>
+  <h4 style="font-size: 20px; font-weight: 700; color: #D69A3B;">The Language of Negativity</h4>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Let’s face it, nobody likes hearing complaints, but for brewers, negative feedback can be a goldmine of insight. We separate the bad from the good by identifying reviews dripping with dissatisfaction: a bad rating, a sour tone, or even implied fear. Again, we want specifics, avoiding vague complaints like “not great” to focus on specifics like “the taste is missing most of the coconut.”</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Our approach compares the prevalence of words in a beer’s positive reviews compared to its negative reviews using term-frequency-inverse-document-frequency (tf-idf) analysis.</p>
   <img src="assets/images/wordcloud2.png" alt="wordcloud2" style="width: 100%; max-width: 900px; display: block; margin: auto;">
 
-  <h4 style="font-size: 20px; font-weight: 700; color: #bc531e;">Emotions in Reviews</h4>
+  <h4 style="font-size: 20px; font-weight: 700; color: #D69A3B;">Emotions in Reviews</h4>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Sometimes, it’s not just what reviewers say but how they say it. Reviews can carry powerful emotions, from joy to anger, and even despair! By analyzing the implied emotional state of the reviewer, we can find reviews where the frustration is palpable, whether it’s the anger of spending money on a dud or the sadness of a once-favorite being disappointing.</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">The previous approach of comparing high-rated and low-rated reviews works well for identifying more obvious criticisms, as low-rated reviews tend to be straightforward and direct about negative feedback. We use an emotion analysis model specifically on high-rated reviews because these reviews often contain subtle or mixed feedback. For example, a positive review might include some constructive criticism, but it can be harder to spot since the overall tone is positive. The emotion analysis model helps us identify these hidden emotions or critiques within the positive feedback, by analyzing sentence by sentence.</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">We used a machine learning tool to analyze the emotions in reviews. We could determine the overall emotion expressed in each review by giving the reviews to a model called <a href="https://huggingface.co/j-hartmann/emotion-english-distilroberta-base" style="color: #3182ce;">Emotion English DistilRoBERTa-base</a>. Reviews can have different sentiments, like anger, sadness, joy, and surprise. This tool helped us categorize these emotions in our dataset, which is useful for identifying if there’s a strong emotional element tied to specific types of beer.</p>
@@ -83,7 +83,7 @@ author_profile: true
 </section>
 
 <section id="Body3" style="padding: 20px; font-family: 'Georgia', sans-serif;">
-  <h2 style="font-size: 28px; font-weight: 700; color: #00008B;">Following the Clues: What Drives Negativity?</h2>
+  <h2 style="font-size: 28px; font-weight: 700; color: #bc531e;">Following the Clues: What Drives Negativity?</h2>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">What exactly in a beer irritates reviewers? Is it the appearance, the aroma, the palate, or the taste? A combination of these? We use the classification model <a href="https://huggingface.co/facebook/bart-large-mnli" style="color: #3182ce;">bart-large-mnli</a> to organize the criticisms by category.</p>
 
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Emboldened by our newly acquired knowledge about criticisms, can we identify each country’s common weak points in beer production? What are the main criticisms of each beer style? Looking for patterns, we turn to interactive visualizations. Take a look around, what patterns are you able to identify?</p>
@@ -91,13 +91,13 @@ author_profile: true
 </section>
 
 <section id="Conclusion" style="padding: 20px; font-family: 'Georgia', sans-serif;">
-  <h2 style="font-size: 28px; font-weight: 700; color: #00008B;">Conclusion: Avoiding the Pitfalls</h2>
+  <h2 style="font-size: 28px; font-weight: 700; color: #bc531e;">Conclusion: Avoiding the Pitfalls</h2>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Brewing beer is as much an art as it is a science, and no brewery gets it right every time. But by listening to what drinkers hate—and why—they can avoid common pitfalls. From over-carbonated disasters to flavor profiles that miss the mark*, our analysis shines a light on the pain points reviewers report.</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">In the end, a single review is just an opinion. But a collection of reviews is a roadmap to better beer. By decoding complaints and understanding emotions, we help ensure that the next pint is one worth savoring. Cheers to that! 🍺</p>
 </section>
 
 <section id="References" style="padding: 20px; font-family: 'Georgia', sans-serif;">
-  <h2 style="font-size: 28px; font-weight: 700; color: #00008B;">References</h2>
+  <h2 style="font-size: 28px; font-weight: 700; color: #bc531e;">References</h2>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568; margin-bottom: 1.5rem;">Below are the key references that guided the analysis and findings shared in this study. For further reading, please explore the listed materials.</p>
 
   <div style="max-width: 800px; margin: 0 auto; text-align: left;">
