@@ -170,7 +170,7 @@ from src.utils import tqdm
 def classify_beer_attributes(criticisms, device="cuda", by = 'location'):
     """Classify beer attributes into appearance, aroma, palate or taste."""
     top_attributes = criticisms
-    classified_criticisms = pd.DataFrame(columns=["appearance", "aroma", "palate", "taste"], index=top_attributes[by])
+    classified_criticisms = pd.DataFrame(columns=["appearance", "aroma", "palate", "taste"], index=top_attributes.index)
     classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=device)
     categories = ["appearance", "aroma", "palate", "taste"]
 
