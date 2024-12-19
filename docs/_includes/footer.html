@@ -1,5 +1,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Brush+Script+MT&display=swap" rel="stylesheet">
-<section style="background-image: url('assets/images/footer.jpeg'); background-size: cover; padding: 1rem; color: white; text-align: center; width: 100vw; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); position: relative;">
+
+<section style="background-image: url('assets/images/footer.jpeg'); background-size: cover; background-position: center; padding: 1rem; color: white; text-align: center; width: 100vw; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); position: relative; margin-top: 0;">
     <h2 style="font-size: 1.2rem; margin-bottom: 1.0rem 0; font-family: 'Brush Script MT', cursive; color: #178582;">Meet the Masterminds 🍺</h2>
     
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; max-width: 900px; margin: 0 auto;">
@@ -34,20 +35,6 @@
     </div>
 </section>
 
-<div class="page__footer-follow">
-  <ul class="social-icons">
-    {% if site.data.ui-text[site.locale].follow_label %}
-      <li><strong>{{ site.data.ui-text[site.locale].follow_label }}</strong></li>
-    {% endif %}
-
-    {% if site.footer.links %}
-      {% for link in site.footer.links %}
-        {% if link.label and link.url %}
-          <li><a href="{{ link.url }}" rel="nofollow noopener noreferrer"><i class="{{ link.icon | default: 'fas fa-link' }}" aria-hidden="true"></i> {{ link.label }}</a></li>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-  </ul>
+<div class="page__footer-copyright" style="background-color: #f8f8f8; padding: 1rem 0; text-align: center;">
+    &copy; {{ site.time | date: '%Y' }} <a href="{{ site.copyright_url | default: site.url }}">{{ site.copyright | default: site.title }}</a>. {{ site.data.ui-text[site.locale].powered_by | default: "Powered by" }} <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.
 </div>
-
-<div class="page__footer-copyright">&copy; {{ site.time | date: '%Y' }} <a href="{{ site.copyright_url | default: site.url }}">{{ site.copyright | default: site.title }}</a>. {{ site.data.ui-text[site.locale].powered_by | default: "Powered by" }} <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
