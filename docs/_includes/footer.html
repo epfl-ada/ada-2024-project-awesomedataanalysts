@@ -1,6 +1,6 @@
-<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Playfair+Display&display=swap" rel="stylesheet">
-<section style="background-color: #CD7F32; padding: 1rem; color: white; text-align: center; width: 100vw; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); position: relative;">
-    <h2 style="font-size: 1.2rem; margin-bottom: 1.0rem 0; font-family: 'Playfair Display', Georgia, serif; color: #178582;">Meet the Masterminds 🍺</h2>
+<link href="https://fonts.googleapis.com/css2?family=Brush+Script+MT&display=swap" rel="stylesheet">
+<section style="background-image: url('assets/images/footer.jpeg'); background-size: cover; padding: 1rem; color: white; text-align: center; width: 100vw; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); position: relative;">
+    <h2 style="font-size: 1.2rem; margin-bottom: 1.0rem 0; font-family: 'Brush Script MT', cursive; color: #178582;">Meet the Masterminds 🍺</h2>
     
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; max-width: 900px; margin: 0 auto;">
         <div style="padding: 0.5rem;">
@@ -32,7 +32,6 @@
             <p style="font-size: 0.7rem; line-height: 1.2;">I never drank in my entire life and I know nothing about beers. Yet, I decided to choose this dataset willingly.</p>
         </div>
     </div>
-    
 </section>
 
 <div class="page__footer-follow">
@@ -48,10 +47,6 @@
         {% endif %}
       {% endfor %}
     {% endif %}
-
-    {% unless site.atom_feed.hide %}
-      <li><a href="{% if site.atom_feed.path %}{{ site.atom_feed.path }}{% else %}{{ '/feed.xml' | relative_url }}{% endif %}"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].feed_label | default: "Feed" }}</a></li>
-    {% endunless %}
   </ul>
 </div>
 
