@@ -2,6 +2,7 @@ from transformers import pipeline
 import random 
 
 def emotion_sentiment(data, cuda=False):
+    """Compute the emotion scores for anger, disgust, fear, joy, neutral, sadness and surprise."""
     if cuda:
         classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", top_k=None, device="cuda")
     else:
@@ -31,8 +32,8 @@ def emotion_sentiment(data, cuda=False):
 
 
 def polarity_sentiment(data, cuda=False):
-    # We consider negative review to be those with scores 0, 1 or 2, and we will try to find those that have an extreme vocabulary using a 
-    # sentiment analysis model
+    """We consider negative review to be those with scores 0, 1 or 2, and we will try to find those that have an extreme
+    vocabulary using a sentiment analysis model."""
     if cuda:     
         sentiment_task = pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest", device="cuda")
     else:    
@@ -59,6 +60,7 @@ def polarity_sentiment(data, cuda=False):
     return negative_reviews
 
 def summarize(df):
+    """Summarize reviews."""
     summarizer = pipeline("summarization", device="cuda")
     all_complaints = ' '.join(df['review'])
 

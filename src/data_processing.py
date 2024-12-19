@@ -5,6 +5,7 @@ import re
 from .data_loading import iter_reviews
 
 def process_document(document):
+    """Fix apostrophe encoding, and 'ipa' spelling."""
     # some apostrophes have been replaced by â\x80\x99 (â) this is due to an encoding issue beyond our control
     document = re.sub(r"â\x80\x99", "’", document)
 
@@ -14,7 +15,7 @@ def process_document(document):
     return document
 
 def build_corpus_from_reviews(reviews, expert_ids=None, expert_weight=2):
-    
+    """Build the corpus from the reviews, giving higher weight to expert users."""
     reviews_by_beer = reviews.groupby("beer_name")
     #beer_names = reviews_by_beer.groups.keys()
     beer_names = list(reviews_by_beer.size().sample(len(reviews_by_beer), random_state=23).index)
@@ -36,7 +37,7 @@ def build_corpus_from_reviews(reviews, expert_ids=None, expert_weight=2):
     return corpus, beer_names
 
 def get_quantile_split(reviews, q=10, column="rating"):
-    """Split reviews into positive and negative, at the qth quantile of the given column."""
+    """Split reviews into positive and negative, at the q-th quantile of the given column."""
     percentiles = reviews.groupby("beer_name")[column].quantile(q / 100).rename("percentile")
     reviews = reviews.merge(percentiles, on="beer_name")
     worst_reviews = reviews[reviews[column] <= reviews["percentile"]]
@@ -44,6 +45,7 @@ def get_quantile_split(reviews, q=10, column="rating"):
     return best_reviews, worst_reviews
 
 def build_split_corpus_from_emotion_analysis(reviews, expert_ids=None, expert_weight=2):
+    """Build positive-negative corpus using the emotion analysis results, giving higher weight to expert users."""
     beer_names = reviews["beer_name"].unique()
 
     # TODO what about experts and process_document ? emotion analysis model has its own pipeline, can't do this
@@ -71,6 +73,8 @@ def build_split_corpus_from_emotion_analysis(reviews, expert_ids=None, expert_we
     return pos_corpus, neg_corpus, beer_names
 
 def build_corpus(reviews, expert_ids=None, expert_weight=2, quantile_split=False, emotion_split=False):
+    """Build the corpus as specified. Options include using experts and splitting by quantile or by emotion.
+    This is the function the user should use."""
     if quantile_split and emotion_split:
         raise ValueError("choose either quantile split or emotion split, not both")
 
@@ -93,8 +97,10 @@ def build_corpus(reviews, expert_ids=None, expert_weight=2, quantile_split=False
         corpus, reviews = build_corpus_from_reviews(reviews, expert_ids=expert_ids, expert_weight=expert_weight)
         return corpus, reviews
 
-# eg review_counts_by(review_file, "beer_id") for the number of reviews for each beer
 def review_counts_by(review_file, by, **iter_reviews_kwargs):
+    """Count the number of reviews by column *by*.
+
+    >>> review_counts_by(review_file, "beer_id") # number of reviews for each beer"""
     review_counts = {}
 
     for review in iter_reviews(review_file, **iter_reviews_kwargs):
@@ -103,8 +109,11 @@ def review_counts_by(review_file, by, **iter_reviews_kwargs):
 
     return review_counts
 
-# eg review_avg_by(review_file, "beer_id", "overall") for the average `overall` value for each beer
 def review_avg_by(review_file, by, on, **iter_reviews_kwargs):
+    """Compute the average value of reviews[on] by column *by*.
+    
+    >>> review_avg_by(review_file, "beer_id", "overall") # average `overall` value for each beer
+    """
     review_items = {}
 
     for review in iter_reviews(review_file, **iter_reviews_kwargs):
@@ -113,6 +122,7 @@ def review_avg_by(review_file, by, on, **iter_reviews_kwargs):
     return {k: np.mean(review_items[k]) for k in review_items}
 
 def add_review_columns(review_file, df, by):
+    """Add review counts and average overall rating for each beer."""
     review_counts = pd.DataFrame(review_counts_by(review_file, by).items(), columns=[by, "review_count"])
     df = df.merge(review_counts, on=by, how="inner")
 
@@ -120,11 +130,3 @@ def add_review_columns(review_file, df, by):
     df = df.merge(review_overall, on=by, how="inner")
 
     return df
-
-def isEnglish(s):
-    try:
-        s.encode(encoding='utf-8').decode('ascii') # detect all non ascii characters => most of the time not english
-    except UnicodeDecodeError:
-        return False
-    else:
-        return True

@@ -116,6 +116,7 @@ def get_tfidf_scores(counts):
     return tfidf
 
 def get_top_attributes(scores, top_attributes=10, column_prefix="attr_"):
+    """Get the top *top_attributes* attributes with the highest score, and name them with prefix *column_prefix*."""
     attributes = {}
     for idx, row in scores.iterrows():
         top_attr = row[1:].sort_values(ascending=False).head(top_attributes)
@@ -128,6 +129,8 @@ def get_top_attributes(scores, top_attributes=10, column_prefix="attr_"):
     return attributes
 
 def top_attributes_by(beers, by, top_count=5, column_count=10, column_prefix="attr_"):
+    """Get the *top_count* most frequent attributes aggregated by the *by* column, considering the first
+    *column_count* columns with prefix *column_prefix*."""
     if type(column_prefix) is str:
         column_prefix = [column_prefix]
 
@@ -164,6 +167,7 @@ from transformers import pipeline
 from src.utils import tqdm
 
 def classify_beer_attributes(criticisms, device="cuda", by = 'location'):
+    """Classify beer attributes into appearance, aroma, palate or taste."""
     top_attributes = criticisms
     classified_criticisms = pd.DataFrame(columns=["appearance", "aroma", "palate", "taste"], index=top_attributes[by])
     classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=device)
