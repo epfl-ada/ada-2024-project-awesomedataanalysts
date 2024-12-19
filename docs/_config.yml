@@ -21,7 +21,7 @@ title                    : "Light Ale, Big Fail: What Beer Reviewers Hate the Mo
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 # name                     : "Your Name"
-description              : "BeerHaters Website"
+description              : "Light Ale, Big Fail: What Beer Reviewers Hate the Most Website"
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "/ada-2024-project-awesomedataanalysts" # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
