@@ -100,9 +100,17 @@ The directory structure of new project looks like this:
 
 ```
 ├── data                        <- Project data files
-│   ├── RateBeer                <- RateBeer dataset, as described above
+│   ├── RateBeer                <- RateBeer dataset (link in Quickstart)
+│   ├── RateBeer_processed      <- Processed RateBeer dataset (link in Quickstart)
 │
 ├── src                         <- Source code
+│   ├── data_loading.py         <- data loading logic
+│   ├── data_processing.py      <- data processing logic, except for text-specific processing like tf-idf
+│   ├── models.py               <- processing using ml models, including emotion analysis and attribute classification
+│   ├── plot_wordcloud.py       <- wordcloud logic for milestone 2 notebook
+│   ├── plots.py                <- plotting logic
+│   ├── text_processing.py      <- text processing logic, including tf-idf
+│   ├── utils.py                <- utility functions
 │
 ├── milestone-3.ipynb           <- milestone 3 notebook containing all final results and data processing for the data story
 │

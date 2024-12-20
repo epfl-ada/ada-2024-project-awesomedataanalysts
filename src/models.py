@@ -83,3 +83,37 @@ def summarize(df):
     print(final_summary)
     return final_summary
 
+from transformers import pipeline
+from src.utils import tqdm
+
+def classify_beer_attributes(criticisms, device="cuda", by = 'location'):
+    """Classify beer attributes into appearance, aroma, palate or taste."""
+    top_attributes = criticisms
+    classified_criticisms = pd.DataFrame(columns=["appearance", "aroma", "palate", "taste"], index=top_attributes.index)
+    classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=device)
+    categories = ["appearance", "aroma", "palate", "taste"]
+
+    for i in tqdm(np.arange(top_attributes.shape[0])):
+    
+        features = top_attributes.iloc[i, 1::].dropna().values
+        appearance = []
+        aroma = []
+        palate = []
+        taste = []
+        for feature in features:
+            result = classifier(feature, candidate_labels=categories)
+            if result['labels'][0] == "appearance" and result['scores'][0]>0.5:
+                appearance.append(feature)
+            elif result['labels'][0] == "aroma" and result['scores'][0]>0.5:
+                aroma.append(feature)
+            elif result['labels'][0] == "palate" and result['scores'][0]>0.5:
+                palate.append(feature)
+            elif result['labels'][0] == "taste" and result['scores'][0]>0.5:
+                taste.append(feature)
+            
+        classified_criticisms.loc[top_attributes.iloc[i, 0], 'appearance'] = appearance
+        classified_criticisms.loc[top_attributes.iloc[i, 0], 'aroma'] = aroma
+        classified_criticisms.loc[top_attributes.iloc[i, 0], 'palate'] = palate
+        classified_criticisms.loc[top_attributes.iloc[i, 0], 'taste'] = taste
+
+    return classified_criticisms
