@@ -23,9 +23,11 @@ We analyze beers, not users, so in a nutshell we need many beers with many revie
 - The number of textual reviews : RateBeer has 7M, versus BeerAdvocate's 2.5M.
 - The distribution of the number of reviews by beer : RateBeer has more beers with many reviews, compared to BeerAdvocate. See plot below.
 - The geographic diversity of the beers reviewed (for analysis by location) : RateBeer beers are much more international, while a majority of BeerAdvocate beers are from the USA, which makes analysis by location not very significant statistically for countries outside the USA. See plot below. (Note that RateBeer users are also more international than BeerAdvocate users, but this is not the topic of our analysis.)
+- Additionally, we rely on experienced users' precise wording in reviews. On average (see plot below), RateBeer users have written more reviews than BeerAdvocate users.
 
 ![](images/total-reviews.png)
 ![](images/location.png)
+![](images/ba_vs_rb_user_reviews.png)
 
 
 We choose not to work on a combination of both datasets, because

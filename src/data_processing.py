@@ -48,8 +48,6 @@ def build_split_corpus_from_emotion_analysis(reviews, expert_ids=None, expert_we
     """Build positive-negative corpus using the emotion analysis results, giving higher weight to expert users."""
     beer_names = reviews["beer_name"].unique()
 
-    # TODO what about experts and process_document ? emotion analysis model has its own pipeline, can't do this
-    # TODO make pickle or (better) upload csv. tokens_feeling = pd.read_pickle("./data/review_with_tokens_emotions.pkl")
     tokens_feeling = pd.read_csv("./data/RateBeer_processed/reviews_with_tokens_emotions.csv")
 
     neg_corpus = []

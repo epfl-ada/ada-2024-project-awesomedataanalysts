@@ -28,7 +28,7 @@ author_profile: true
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Our story begins with RateBeer, one of the largest hubs for beer enthusiasts. Over the years (our data covers the range 2001-2017), countless drinkers have shared their thoughts and opinions on this website. This treasure trove of reviews gives us an incredible opportunity to explore the world of beers through the eyes, taste buds, and words of the most dedicated fans. Each review is a tiny puzzle piece, and together, they form a picture of the beer world: the good, the bad, and the skunky. The main question we wish to answer here is then the following: Can Reviews Help Us Identify What People Hate?</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Let’s dive deeper into the data:</p>
 
-  <img src="assets/images/Trial6.png" alt="Rate Beer" style="width: 100%; max-width: 900px; display: block; margin: auto;">
+  <img src="assets/images/RateBeer.png" alt="Rate Beer Dataset" style="width: 100%; max-width: 900px; display: block; margin: auto;">
 
 </section>
 
@@ -52,16 +52,18 @@ author_profile: true
     "Strong chocolate, cocoa, vanilla, malt, a little dark fruit aroma. Tastes similar. Very velvety, smooth, roasted malt and cocoa chocolate."
   </blockquote>
 
-  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">See the difference? Clearly, “tasty” “nice beer” is not as rich in information as “solid bitterness from the roasted malt and dark chocolate” or “a little dark fruit aroma.” The experts don’t just say what they feel; they explain why. Their precise vocabulary gives us depth and clarity in understanding what makes a beer shine or fail.</p>
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">See the difference? Clearly, “tasty” “nice beer” is not as rich in information as “solid bitterness from the roasted malt and dark chocolate” or “a little dark fruit aroma.” The experts don’t just say what they feel; they explain why. Their precise vocabulary gives us depth and clarity in understanding what makes a beer shine or fail. To gain the attention of more beer enthusiasts and to draw reliable conclusions to guide our readers, our analysis focused only on studying the beers that got reviewed at least for 300 times. As based on our dataset, this threshold reflects the popularity of the beers in question and at the same time provides us with sufficient data to actually extract some meaningful insights.</p>
 
   <h4 style="font-size: 20px; font-weight: 700; color: #D69A3B; font-family: 'Georgia', sans-serif;">Extracting Key Features</h4>
-  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">So, what are people actually talking about? We break down reviews to reveal the most talked-about features of different beers. Our technique ensures that we extract characteristics that are specific to each beer and not vague terms like “good” or “bad.” Is this lager a little light-headed and slightly citrusy? Or is it haunted by a metallic aftertaste? Using this technique, we can extract patterns, uncovering, for example, the common characteristics of Belgian beers. “Overrated,” according to our reviewers. Imperial stouts? Burnt and roasty. Indian pale ales? Bland and soapy, but sometimes hoppy, sprucy, and even caramelly.</p>
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">So, what are people actually talking about? We break down reviews to reveal the most talked-about features of different beers. Our technique ensures that we extract characteristics that are specific to each beer and not vague terms like “good” or “bad.” <i>Is this lager a little light-headed and slightly citrusy? Or is it haunted by a metallic aftertaste? </i> Using this technique, we can extract patterns, uncovering, for example, the common characteristics of Belgian beers. “Overrated,” according to our reviewers. <i>Imperial stouts? Burnt and roasty? Indian pale ales? Bland and soapy, but sometimes hoppy, sprucy, and even caramelly.</i></p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Sounds nice, but let’s not lose sight of the prize and try to understand what people truly dislike—the deal-breakers, if you will.</p>
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Before delving into the negative aspects of beer reviews, let’s first gain a global perspective on how beer is perceived worldwide. This map offers insights into the top attributes—both positive and negative—highlighted by reviewers. Additionally, colors detonate the average rating given by reviewers from each country or state, providing a comprehensive overview of regional beer preferences and opinions. Rotate the map and explore for yourself !!</p>
   <div>
     <!-- <h4 style="font-size: 24px; font-weight: 700; color: #2b6cb0;">Geographical Analysis</h4> -->
     {% include Geographic_Distribution.html %}
   </div>
-  <img src="assets/images/wordcloud1.png" alt="wordcloud1" style="width: 100%; max-width: 900px; display: block; margin: auto;">
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">And to make things more interesting, here is a simplified representation of general attributes classified for two different beers:</p>
+  <img src="assets/images/wordcloud1.png" alt="General Attributes for 2 Beer Styles" style="width: 100%; max-width: 900px; display: block; margin: auto;">
 
 </section>
 
@@ -70,30 +72,48 @@ author_profile: true
 
   <h4 style="font-size: 20px; font-weight: 700; color: #D69A3B; font-family: 'Georgia', sans-serif;">The Language of Negativity</h4>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Let’s face it, nobody likes hearing complaints, but for brewers, negative feedback can be a goldmine of insight. We separate the bad from the good by identifying reviews dripping with dissatisfaction: a bad rating, a sour tone, or even implied fear. Again, we want specifics, avoiding vague complaints like “not great” to focus on specifics like “the taste is missing most of the coconut.”</p>
-  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Our approach compares the prevalence of words in a beer’s positive reviews compared to its negative reviews using term-frequency-inverse-document-frequency (tf-idf) analysis.</p>
-  <img src="assets/images/wordcloud2.png" alt="wordcloud2" style="width: 100%; max-width: 900px; display: block; margin: auto;">
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Our approach compares the prevalence of words in a beer’s positive reviews compared to its negative reviews using term-frequency-inverse-document-frequency (tf-idf) analysis. Through the following table, some criticisms describing different beers are highlighted.</p>
+  <img src="assets/images/Table.png" alt="Negative Reviews Table" style="width: 100%; max-width: 900px; display: block; margin: auto;">
+  <br>
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Below, based on the expert reviews, the most common attributes that drive negativity and criticism for two beer styles can be easily perceived. 😤</p>
+  <img src="assets/images/wordcloud2.png" alt="Negative Attributes for 2 Beer Styles" style="width: 100%; max-width: 900px; display: block; margin: auto;">
 
   <h4 style="font-size: 20px; font-weight: 700; color: #D69A3B; font-family: 'Georgia', sans-serif;">Emotions in Reviews</h4>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Sometimes, it’s not just what reviewers say but how they say it. Reviews can carry powerful emotions, from joy to anger, and even despair! By analyzing the implied emotional state of the reviewer, we can find reviews where the frustration is palpable, whether it’s the anger of spending money on a dud or the sadness of a once-favorite being disappointing.</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">The previous approach of comparing high-rated and low-rated reviews works well for identifying more obvious criticisms, as low-rated reviews tend to be straightforward and direct about negative feedback. We use an emotion analysis model specifically on high-rated reviews because these reviews often contain subtle or mixed feedback. For example, a positive review might include some constructive criticism, but it can be harder to spot since the overall tone is positive. The emotion analysis model helps us identify these hidden emotions or critiques within the positive feedback, by analyzing sentence by sentence.</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">We used a machine learning tool to analyze the emotions in reviews. We could determine the overall emotion expressed in each review by giving the reviews to a model called <a href="https://huggingface.co/j-hartmann/emotion-english-distilroberta-base" style="color: #3182ce;">Emotion English DistilRoBERTa-base</a>. Reviews can have different sentiments, like anger, sadness, joy, and surprise. This tool helped us categorize these emotions in our dataset, which is useful for identifying if there’s a strong emotional element tied to specific types of beer.</p>
   {% include stacked_bar_chart.html %}
-  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">As you’d expect, negative emotions like disgust and sadness show up more in low-rated reviews, while positive emotions like joy are more common in high-rated reviews. To study this further, we compare review sentences that express disgust and sadness with those that show joy and neutral emotions.</p>
-  <img src="assets/images/wordcloud3.png" alt="wordcloud3" style="width: 100%; max-width: 900px; display: block; margin: auto;">
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">According to the above plot, as you’d expect, negative emotions like disgust and sadness show up more in low-rated reviews, while positive emotions like joy are more common in high-rated reviews. To study this further, we compare review sentences that express disgust and sadness with those that show joy and neutral emotions. The following examples validate the accuracy of the models in decribing the conveyed sentiment. Given that, the scores perfectly align and are consistent with the reviews content. </p>
+  
+  <blockquote style="font-size: 16px; line-height: 1.7; color: #4a5568; border-left: 4px solid #D69A3B; padding-left: 20px; margin-left: 0; font-style: italic;">
+    "I love this brew and look forward to seeing it every autumn."
+    <br><br>
+    <span style="font-size: 14px; color: #2D3748; font-weight: bold;">Joy: 0.99</span>
+  </blockquote>
+  
+  <blockquote style="font-size: 16px; line-height: 1.7; color: #4a5568; border-left: 4px solid #D69A3B; padding-left: 20px; margin-left: 0; font-style: italic;">
+    "At first I was a bit apprehensive of the cloudiness in my glass"
+    <br><br>
+    <span style="font-size: 14px; color: #2D3748; font-weight: bold;">Fear: 0.99</span>
+  </blockquote>
+
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Looking just below this sentence, you can easily see some common complaints about two different beer styles, extracted through both TF-IDF and emotion analysis.</p>
+  <img src="assets/images/wordcloud3.png" alt="Complaints for 2 Beer Styles" style="width: 100%; max-width: 900px; display: block; margin: auto;">
 
 </section>
 
 <section id="Body3" style="padding: 20px; font-family: 'Georgia', sans-serif;">
   <h2 style="font-size: 28px; font-weight: 700; color: #bc531e; font-family: 'Georgia', sans-serif;">Following the Clues: What Drives Negativity?</h2>
-  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">What exactly in a beer irritates reviewers? Is it the appearance, the aroma, the palate, or the taste? A combination of these? We use the classification model <a href="https://huggingface.co/facebook/bart-large-mnli" style="color: #3182ce;">bart-large-mnli</a> to organize the criticisms by category.</p>
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">What exactly in a beer irritates reviewers? Is it the appearance, the aroma, the palate, or the taste? A combination of these? We use the classification model <a href="https://huggingface.co/facebook/bart-large-mnli" style="color: #3182ce;">bart-large-mnli</a> to organize the criticisms by category. The following pie chart addresses these questions as it focuses on comparing the classified features of the six most common beer styles. As, for each beer type, the pie chart showcases the percentage contribution of each feature to negative reviews, highlighting what people complain about the most. Also, by hovering over these percentages, the top attributes contributing to the obtainment of this percentage can be easily investigated leading to a more comprehensive analysis of the reviewers complaints. Through the obtained results, we can crack the hatred code towards beer as people tend to complain about the taste and the appearence the majority of the time.</p>
+  {% include beer_styles_distribution.html %}
 
-  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Emboldened by our newly acquired knowledge about criticisms, can we identify each country’s common weak points in beer production? What are the main criticisms of each beer style? Looking for patterns, we turn to interactive visualizations. Take a look around, what patterns are you able to identify?</p>
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Emboldened by our newly acquired knowledge about criticisms, can we identify each country’s common weak points in beer production? What are the main criticisms of each beer style? Looking for patterns, we turn to interactive visualizations. Take a look around, what patterns are you able to identify? Feel free to explore the different features from appearance to aroma, taste or palate and dig deeper into understanding how common complaints for each feature are perceived by the different reviewers around the world. Validate it for yourself and see which country aligns the most with your taste in terms of your beer dislikes. </p>
   {% include Geographic_Distribution_Features.html %}
 </section>
 
 <section id="Conclusion" style="padding: 20px; font-family: 'Georgia', sans-serif;">
   <h2 style="font-size: 28px; font-weight: 700; color: #bc531e; font-family: 'Georgia', sans-serif;">Conclusion: Avoiding the Pitfalls</h2>
-  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Brewing beer is as much an art as it is a science, and no brewery gets it right every time. But by listening to what drinkers hate—and why—they can avoid common pitfalls. From over-carbonated disasters to flavor profiles that miss the mark*, our analysis shines a light on the pain points reviewers report.</p>
+  <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">Brewing beer is as much an art as it is a science, and no brewery gets it right every time. But by listening to what drinkers hate—and why—they can avoid common pitfalls. From bland lagers to metallic aftertastes, our analysis shines a light on the pain points reviewers report.</p>
   <p style="font-size: 16px; line-height: 1.7; color: #4a5568;">In the end, a single review is just an opinion. But a collection of reviews is a roadmap to better beer. By decoding complaints and understanding emotions, we help ensure that the next pint is one worth savoring. Cheers to that! 🍺</p>
 </section>
 
@@ -104,13 +124,19 @@ author_profile: true
   <div style="max-width: 800px; margin: 0 auto; text-align: left;">
     <ul style="list-style-type: disc; padding-left: 1.5rem; font-size: 0.8rem; color: #5C4033;">
         <li style="margin-bottom: 0.8rem;">
-            <strong>Author Name</strong> (Year). <em>Title of the Paper or Book</em>. Journal Name, Volume(Issue), Page Numbers. <a href="URL" target="_blank" style="color: #003366;">[Link]</a>
+            <strong>Kiliç, E., Ateş, N., Karakaya, A., & Şahi̇n, D. Ö.</strong> (2015). <em>Two new feature extraction methods for text classification: TESDF and SADF</em>. pp. 475–478. <a href="https://doi.org/10.1109/siu.2015.7129862" target="_blank" style="color: #003366;">[Link]</a>
         </li>
         <li style="margin-bottom: 0.8rem;">
-            <strong>Author Name</strong> (Year). <em>Title of the Paper or Book</em>. Publisher Name. <a href="URL" target="_blank" style="color: #003366;">[Link]</a>
+            <strong>Lewis, M., Liu, Y., Goyal, N., Ghazvininejad, M., Mohamed, A., Levy, O., Stoyanov, V., & Zettlemoyer, L.</strong> (2019). <em>BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension</em>. arXiv:1910.13461 [Cs, Stat]. <a href="https://arxiv.org/abs/1910.13461" target="_blank" style="color: #003366;">[Link]</a>
         </li>
         <li style="margin-bottom: 0.8rem;">
-            <strong>Author Name</strong> (Year). <em>Title of the Paper or Book</em>. Website Name. <a href="URL" target="_blank" style="color: #003366;">[Link]</a>
+            <strong>Liu, Q., Wang, J., Zhang, D., Yang, Y., & Wang, N.</strong> (2018). <em>Text Features Extraction based on TF-IDF Associating Semantic</em>. 2018 IEEE 4th International Conference on Computer and Communications (ICCC). <a href="https://doi.org/10.1109/compcomm.2018.8780663" target="_blank" style="color: #003366;">[Link]</a>
+        </li>
+        <li style="margin-bottom: 0.8rem;">
+            <strong>Rozado, D., Hughes, R., & Halberstadt, J.</strong> (2022). <em>Longitudinal analysis of sentiment and emotion in news media headlines using automated labelling with Transformer language models</em>. PLOS ONE, 17(10), e0276367. <a href="https://doi.org/10.1371/journal.pone.0276367" target="_blank" style="color: #003366;">[Link]</a>
+        </li>
+        <li style="margin-bottom: 0.8rem;">
+            <strong>Vamossy, D. F., & Skog, R.</strong> (2021). <em>EmTract: Extracting Emotions from Social Media</em>. arXiv.org. <a href="https://arxiv.org/abs/2112.03868" target="_blank" style="color: #003366;">[Link]</a>
         </li>
     </ul>
   </div>
