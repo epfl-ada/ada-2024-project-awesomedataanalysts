@@ -11,3 +11,4 @@ wordcloud
 geopandas>=0.13.2
 gensim>=4.3.3
 langid
+plotly==4.24.1
