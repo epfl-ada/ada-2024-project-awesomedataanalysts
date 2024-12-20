@@ -55,7 +55,7 @@ With these 2 ways to define the positive and negative corpus, we can now run tf-
 #### Task 3 : Identifying Key Complaints
 
 To better understand the attributes we extract in task 2, we classify the extracted features using the [bart-large-mnli](https://huggingface.co/facebook/bart-large-mnli) model into the following categories : appearance, aroma, palate and taste.
-To identify key insights into users' dislikes, we aggregate and visualize beer characteristics and criticism by brewery location and beer style. We also tried to aggregate by alcohol content by first discretizing into intervals, but the results were not conclusive.
+To identify key insights into users' dislikes, we aggregate and visualize beer characteristics and criticism by brewery location and beer style. We also tried to aggregate by alcohol content by first discretizing into intervals, but the results were not satisfactory.
 
 #### Timeline
 - 15.11 Load and clean the data, do the pre-analysis
