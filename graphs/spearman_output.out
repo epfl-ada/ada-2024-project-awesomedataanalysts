@@ -1,0 +1,10 @@
+Spearman correlation for emotions by score: 
+(if p value < 0.05 we can say that a change in score, introducted a predictable increase or decrease in the percentage for that emotion) 
+          Spearman correlation   
+anger                 0.600000  
+disgust              -0.828571  
+fear                 -0.657143  
+joy                   1.000000  
+neutral               0.942857  
+sadness              -1.000000  
+surprise              0.028571  
