@@ -111,6 +111,8 @@ The directory structure of new project looks like this:
 │   ├── plots.py                <- plotting logic
 │   ├── text_processing.py      <- text processing logic, including tf-idf
 │   ├── utils.py                <- utility functions
+│   ├── plot_maps.py            <- plotting maps logic
+│   ├── plot_pie_chart.py       <- plotting pie charts logic
 │
 ├── milestone-3.ipynb           <- milestone 3 notebook containing all final results and data processing for the data story
 │
