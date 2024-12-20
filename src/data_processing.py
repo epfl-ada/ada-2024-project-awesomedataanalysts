@@ -50,7 +50,7 @@ def build_split_corpus_from_emotion_analysis(reviews, expert_ids=None, expert_we
 
     # TODO what about experts and process_document ? emotion analysis model has its own pipeline, can't do this
     # TODO make pickle or (better) upload csv. tokens_feeling = pd.read_pickle("./data/review_with_tokens_emotions.pkl")
-    tokens_feeling = pd.read_csv("./data/reviews_with_tokens_emotions.csv")
+    tokens_feeling = pd.read_csv("./data/RateBeer_processed/reviews_with_tokens_emotions.csv")
 
     neg_corpus = []
     pos_corpus = []

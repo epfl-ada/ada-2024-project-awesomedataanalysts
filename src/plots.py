@@ -6,6 +6,87 @@ from collections import defaultdict, Counter
 import scipy.stats as stats
 import seaborn as sns
 
+def classify_location(location):
+    if pd.isnull(location):
+        return None 
+    elif "United States" in location:
+        return "United States"
+    else:
+        return "Other Countries"
+
+def plot_review_count_comparison(rb_beers, ba_beers, q=90):
+    rb_reviews_sum = rb_beers.groupby('beer_id')['review_count'].sum()
+    ba_reviews_sum = ba_beers.groupby('beer_id')['review_count'].sum()
+
+    rb_reviews_sum_df = rb_reviews_sum.reset_index()
+    rb_reviews_sum_df.columns = ['beer_id', 'total_reviews']
+
+    ba_reviews_sum_df = ba_reviews_sum.reset_index()
+    ba_reviews_sum_df.columns = ['beer_id', 'total_reviews']
+
+    rb_reviews = rb_reviews_sum_df['total_reviews']
+    ba_reviews = ba_reviews_sum_df['total_reviews']
+
+    plt.figure(figsize = (10, 4))
+
+    plt.hist(rb_reviews, bins = 20, alpha = 0.5, label = f'RateBeer ({q}-th quantile = {rb_reviews.quantile(q / 100)})', color = 'blue', edgecolor = 'black')
+    plt.hist(ba_reviews, bins = 20, alpha = 0.5, label = f'BeerAdvocate ({q}-th quantile = {ba_reviews.quantile(q / 100)})', color = 'pink', edgecolor = 'black')
+
+    plt.yscale('log')
+
+    plt.title('Comparison of Total Reviews per Beer', fontsize = 14)
+    plt.xlabel('# Reviews', fontsize = 12)
+    plt.ylabel('Frequency (Log Scale)', fontsize = 12)
+    plt.legend(loc='upper right', fontsize = 10)
+
+    plt.tight_layout()
+
+
+def plot_location_comparison(rb_breweries, ba_breweries):
+    rb_breweries['location_category'] = rb_breweries['location'].apply(classify_location)
+    ba_breweries['location_category'] = ba_breweries['location'].apply(classify_location)
+
+    ba_beer_totals = ba_breweries.groupby('location_category')['nbr_beers'].sum().reset_index()
+    ba_beer_totals.columns = ['Location', 'Total Beers']
+    ba_beer_totals = ba_beer_totals[~ba_beer_totals['Location'].isna()]
+
+    rb_beer_totals = rb_breweries.groupby('location_category')['nbr_beers'].sum().reset_index()
+    rb_beer_totals.columns = ['Location', 'Total Beers']
+    rb_beer_totals = rb_beer_totals[~rb_beer_totals['Location'].isna()]
+
+    max_y = max(
+        ba_beer_totals['Total Beers'].max()+50000,
+        rb_beer_totals['Total Beers'].max()
+    )
+
+    color_map = {
+        "United States": "#2B65EC",  # Blue
+        "Other Countries": "pink"  # pink
+    }
+
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
+
+    axes[0].bar(
+        ba_beer_totals['Location'],
+        ba_beer_totals['Total Beers'],
+        color = [color_map[loc] for loc in ba_beer_totals['Location']]
+    )
+    axes[0].set_title("BeerAdvocate")
+    axes[0].set_xlabel("Location")
+    axes[0].set_ylabel("# Beers")
+    axes[0].set_ylim(0, max_y)
+
+    axes[1].bar(
+        rb_beer_totals['Location'],
+        rb_beer_totals['Total Beers'],
+        color = [color_map[loc] for loc in rb_beer_totals['Location']]
+    )
+    axes[1].set_title("Ratebeer")
+    axes[1].set_xlabel("Location")
+
+    fig.suptitle("Comparison of Beers by Location", fontsize = 16)
+    fig.tight_layout(rect = [0, 0, 1, 0.95])
+
 def plot_histogram_with_percentile(data, title, q=50, **hist_kwargs):
     percentile = np.percentile(data, q)
     n = np.sum(np.array(data) > percentile)
